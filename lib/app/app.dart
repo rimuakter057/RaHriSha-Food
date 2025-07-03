@@ -22,6 +22,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
       return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'RaHriShaFood',
+
         home: HomeScreen(),
       );
     }
