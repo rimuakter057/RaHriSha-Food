@@ -23,6 +23,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
             debugShowCheckedModeBanner: false,
             title: 'RaHriShaFood',
             theme: ThemeData(
+              //this is theme data
                 inputDecorationTheme: InputDecorationTheme(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
