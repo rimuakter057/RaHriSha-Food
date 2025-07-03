@@ -17,6 +17,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
       designSize: const Size(393, 852),
       minTextAdapt: true,
       splitScreenMode: true,
+
       builder: (context, child) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
@@ -43,6 +44,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
           home: HomeScreen(),
         );
       },
+
     );
   }
 }
