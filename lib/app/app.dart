@@ -27,27 +27,28 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'RaHriSha Food',
-          theme: ThemeData(
-            //this is theme data
-            inputDecorationTheme: InputDecorationTheme(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.grey.shade100),
-              ),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                fixedSize: Size(double.infinity, 50),
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.deepOrange,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-
+  theme: ThemeData(
+        //this is theme data
+        inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade100),
+        ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+        fixedSize: Size(double.infinity, 50),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.deepOrange,
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        ),
+        ),
+        ),
+        )
+        ,
             home: SearchScreen(),
-          );
+        );
         }
 
     );
