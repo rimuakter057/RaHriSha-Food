@@ -15,6 +15,7 @@ class AppText {
   static const String popularItems = 'Popular Items';
   static const String categories = 'Categories';
   static const String seeAll = 'See All';
+  static const String currentLocation = 'Dinajpur';
 
   // Cart
   static const String cart = 'Cart';
