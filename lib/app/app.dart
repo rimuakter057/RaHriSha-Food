@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:rahrisha_food/features/home/screens/home_screen.dart';
+import '../features/home/screens/home_screen.dart';
+
 
 class RaHriShaFood extends StatefulWidget {
   const RaHriShaFood({super.key});
@@ -39,12 +40,10 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
                     )
                 )
             ),
-            //home: RecipeDetailPage(),
             home: HomeScreen(),
           );
         }
     );
   }
 }
-
 
