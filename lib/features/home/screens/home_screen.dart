@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/app/assets_path.dart';
+import 'package:rahrisha_food/features/home/screens/widget/carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -110,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
-
+            SizedBox(height: 5,),
+            HomeCarouselSlider(),
             // Scrollable Content Area
             Expanded(
               child: SingleChildScrollView(
