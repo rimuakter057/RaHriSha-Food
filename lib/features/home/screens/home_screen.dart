@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/app/assets_path.dart';
-
+import 'package:rahrisha_food/features/home/widgets/home_carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,7 +12,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -29,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -69,14 +69,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                 shape: const CircleBorder(),
                               ),
                               onPressed: () {},
-                              icon: Icon(Icons.search, color: AppColors.primary),
+                              icon: Icon(
+                                Icons.search,
+                                color: AppColors.primary,
+                              ),
                             ),
                             IconButton(
                               style: IconButton.styleFrom(
                                 shape: const CircleBorder(),
                               ),
                               onPressed: () {},
-                              icon: Icon(Icons.notifications, color: AppColors.primary),
+                              icon: Icon(
+                                Icons.notifications,
+                                color: AppColors.primary,
+                              ),
                             ),
                           ],
                         ),
@@ -103,9 +109,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ),
               ),
             ),
-
             // Tab Bar
             // Tab Bar without divider and left-aligned
+            Column(children: [HomeCarouselSlider()]),
             Container(
               padding: EdgeInsets.symmetric(vertical: 8.h),
               child: TabBar(
@@ -150,12 +156,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: 20.h),
         child: Container(
-          width:double.infinity,
+          width: double.infinity,
           height: 80.h,
           decoration: BoxDecoration(
             color: Colors.deepPurple,
             borderRadius: BorderRadius.circular(15.r),
-
           ),
           child: Center(
             child: Text(
@@ -170,7 +175,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ),
       ),
     );
-
   }
 
   Widget _buildTabItem(String text) {
@@ -179,11 +183,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.r),
-        color: Colors.blue,
+          color: Colors.blue,
         ),
         child: Text(
           text,
-          style: TextStyle(fontSize: 14.sp,color: AppColors.white),
+          style: TextStyle(fontSize: 14.sp, color: AppColors.white),
         ),
       ),
     );
@@ -193,10 +197,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return Center(
       child: Padding(
         padding: EdgeInsets.all(16.0.w),
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 18.sp),
-        ),
+        child: Text(text, style: TextStyle(fontSize: 18.sp)),
       ),
     );
   }
