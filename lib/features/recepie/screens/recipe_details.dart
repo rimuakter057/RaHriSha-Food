@@ -9,21 +9,17 @@ class RecipeDetailPage extends StatefulWidget {
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
-  final ScrollController _scrollController = ScrollController();
+  final _scrollController = ScrollController();
 
-  final GlobalKey _detailsKey = GlobalKey();
-  final GlobalKey _ingredientsKey = GlobalKey();
-  final GlobalKey _instructionsKey = GlobalKey();
-  final GlobalKey _nutritionKey = GlobalKey();
+  final _detailsKey = GlobalKey();
+  final _ingredientsKey = GlobalKey();
+  final _instructionsKey = GlobalKey();
+  final _nutritionKey = GlobalKey();
 
-  void _scrollToSection(GlobalKey key) {
-    final context = key.currentContext;
-    if (context != null) {
-      Scrollable.ensureVisible(
-        context,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
+  void _scrollTo(GlobalKey key) {
+    final ctx = key.currentContext;
+    if (ctx != null) {
+      Scrollable.ensureVisible(ctx, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
     }
   }
 
@@ -31,14 +27,18 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final sections = [
+      {'label': 'Details', 'key': _detailsKey},
+      {'label': 'Ingredients', 'key': _ingredientsKey},
+      {'label': 'Instructions', 'key': _instructionsKey},
+      {'label': 'Nutrition', 'key': _nutritionKey},
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Recipe Details'),
         centerTitle: true,
-        leading: IconButton(
-          onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
+        leading: IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.arrow_back_ios)),
       ),
       body: SingleChildScrollView(
         controller: _scrollController,
@@ -66,9 +66,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                       children: [
                         Text(
                           'Homemade Classic Margherita Pizza',
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 12),
                         Row(
@@ -78,19 +76,11 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Sarah Mitchell',
-                                  style: theme.textTheme.bodyLarge?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey[800],
-                                  ),
-                                ),
-                                Text(
-                                  'Professional Chef',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
+                                Text('Sarah Mitchell',
+                                    style: theme.textTheme.bodyLarge?.copyWith(
+                                        fontWeight: FontWeight.w600, color: Colors.grey[800])),
+                                Text('Professional Chef',
+                                    style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey[600])),
                               ],
                             ),
                           ],
@@ -100,29 +90,16 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                   ),
                   Card(
                     elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 16,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          _buildTimeInfo(
-                            'Time',
-                            '15 min',
-                            Icons.watch_later_outlined,
-                          ),
-                          _buildTimeInfo('Servings', '4', Icons.people_outline),
-                          _buildTimeInfo(
-                            'Difficulty',
-                            'Medium',
-                            Icons.assessment,
-                          ),
-                          _buildTimeInfo('Rating', '4.8', Icons.star_border),
+                          _timeInfo('Time', '15 min', Icons.watch_later_outlined),
+                          _timeInfo('Servings', '4', Icons.people_outline),
+                          _timeInfo('Difficulty', 'Medium', Icons.assessment),
+                          _timeInfo('Rating', '4.8', Icons.star_border),
                         ],
                       ),
                     ),
@@ -130,76 +107,45 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 4,
-                    children: [
-                      TextButton(
-                        onPressed: () => _scrollToSection(_detailsKey),
-                        child: const Text('Details'),
-                      ),
-                      TextButton(
-                        onPressed: () => _scrollToSection(_ingredientsKey),
-                        child: const Text('Ingredients'),
-                      ),
-                      TextButton(
-                        onPressed: () => _scrollToSection(_instructionsKey),
-                        child: const Text('Instructions'),
-                      ),
-                      TextButton(
-                        onPressed: () => _scrollToSection(_nutritionKey),
-                        child: const Text('Nutrition'),
-                      ),
-                    ],
+                    children: sections
+                        .map((s) => TextButton(
+                        onPressed: () => _scrollTo(s['key'] as GlobalKey),
+                        child: Text(s['label'] as String)))
+                        .toList(),
                   ),
                   const Divider(),
                   const SizedBox(height: 10),
-                  const Text(
-                    "Description",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
+                 Align(
+                   alignment: Alignment.topLeft,
+                 child:  _sectionTitle('Description'),),
                   const SizedBox(height: 8),
-                  Text(
-                    'A classic Neapolitan pizza with fresh mozzarella, basil, and San Marzano tomatoes. Perfect for pizza lovers who want to master the art of homemade pizza.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black.withOpacity(0.8),
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      'A classic Neapolitan pizza with fresh mozzarella, basil, and San Marzano tomatoes. Perfect for pizza lovers who want to master the art of homemade pizza.',
+                      style: TextStyle(fontSize: 14, color: Colors.black.withOpacity(0.8)),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Card(
                     elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 16,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
                       child: Column(
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              _buildTimeInfo(
-                                'Preparation Time',
-                                '15 minutes',
-                                null,
-                              ),
-                              _buildTimeInfo(
-                                'Cooking Time',
-                                '20 minutes',
-                                null,
-                              ),
+                              _timeInfo('Preparation Time', '15 minutes'),
+                              _timeInfo('Cooking Time', '20 minutes'),
                             ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              _buildTimeInfo('Total Time', '35 min', null),
-                              _buildTimeInfo('Servings', '4 portions', null),
+                              _timeInfo('Total Time', '35 min'),
+                              _timeInfo('Servings', '4 portions'),
                             ],
                           ),
                         ],
@@ -207,40 +153,26 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    "Category",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  _sectionTitle('Category'),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: [
-                      _buildCategoryChip('Italian'),
-                      _buildCategoryChip('Main Course'),
-                      _buildCategoryChip('Vegetarian'),
-                    ],
+                    children: ['Italian', 'Main Course', 'Vegetarian'].map(_categoryChip).toList(),
                   ),
                   const SizedBox(height: 24),
                   _sectionTitle('Ingredients', key: _ingredientsKey),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      children: _ingredients.map(_buildIngredientItem).toList(),
-                    ),
+                    child: Column(children: _ingredients.map(_ingredientItem).toList()),
                   ),
                   const SizedBox(height: 24),
                   _sectionTitle('Instructions', key: _instructionsKey),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
-                      children: List.generate(
-                        _instructions.length,
-                        (index) => _buildInstructionStep(
-                          index + 1,
-                          _instructions[index],
-                        ),
-                      ),
+                      children: List.generate(_instructions.length,
+                              (i) => _instructionStep(i + 1, _instructions[i])),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -257,24 +189,15 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                       child: Column(
                         children: [
                           Row(
-                            children: [
-                              _buildNutritionItem('Calories', '285'),
-                              _buildNutritionItem('Protein', '12g'),
-                            ],
+                            children: [_nutritionItem('Calories', '285'), _nutritionItem('Protein', '12g')],
                           ),
                           const SizedBox(height: 12),
                           Row(
-                            children: [
-                              _buildNutritionItem('Carbs', '42g'),
-                              _buildNutritionItem('Fat', '8g'),
-                            ],
+                            children: [_nutritionItem('Carbs', '42g'), _nutritionItem('Fat', '8g')],
                           ),
                           const SizedBox(height: 12),
                           Row(
-                            children: [
-                              _buildNutritionItem('Fiber', '2g'),
-                              _buildNutritionItem('Sodium', '590mg'),
-                            ],
+                            children: [_nutritionItem('Fiber', '2g'), _nutritionItem('Sodium', '590mg')],
                           ),
                         ],
                       ),
@@ -289,91 +212,66 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     );
   }
 
-  Widget _sectionTitle(String title, {Key? key}) {
-    return Padding(
-      key: key,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        title,
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
+  Widget _sectionTitle(String title, {Key? key}) => Padding(
+    key: key,
+    padding: const EdgeInsets.symmetric(horizontal: 16),
+    child: Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+  );
 
-  Widget _buildTimeInfo(String label, String value, IconData? icon) {
-    return Expanded(
-      child: Column(
-        children: [
-          if (icon != null) Icon(icon, size: 24, color: Colors.blue),
-          if (icon != null) const SizedBox(height: 4),
-          Text(label, style: TextStyle(color: Colors.grey[600])),
-          Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
+  Widget _timeInfo(String label, String value, [IconData? icon]) => Expanded(
+    child: Column(
+      children: [
+        if (icon != null) Icon(icon, size: 24, color: Colors.blue),
+        if (icon != null) const SizedBox(height: 4),
+        Text(label, style: TextStyle(color: Colors.grey[600])),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.bold)),
+      ],
+    ),
+  );
 
-  Widget _buildCategoryChip(String label) {
-    return Chip(
-      label: Text(label),
-      backgroundColor: Colors.grey.shade100,
-      labelStyle: const TextStyle(color: Colors.black),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color: Colors.grey.shade100),
-      ),
-    );
-  }
+  Widget _categoryChip(String label) => Chip(
+    label: Text(label),
+    backgroundColor: Colors.grey.shade100,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12),
+      side: BorderSide(color: Colors.grey.shade100),
+    ),
+  );
 
-  Widget _buildIngredientItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.check_circle_outline, size: 20, color: Colors.blue),
-          const SizedBox(width: 8),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 16))),
-        ],
-      ),
-    );
-  }
+  Widget _ingredientItem(String text) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Icon(Icons.check_circle_outline, size: 20, color: Colors.blue),
+        const SizedBox(width: 8),
+        Expanded(child: Text(text, style: const TextStyle(fontSize: 16))),
+      ],
+    ),
+  );
 
-  Widget _buildInstructionStep(int step, String instruction) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 14,
-            backgroundColor: Colors.blue,
-            child: Text('$step', style: const TextStyle(color: Colors.white)),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(instruction, style: const TextStyle(fontSize: 16)),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _instructionStep(int step, String text) => Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircleAvatar(radius: 14, backgroundColor: Colors.blue, child: Text('$step', style: const TextStyle(color: Colors.white))),
+        const SizedBox(width: 12),
+        Expanded(child: Text(text, style: const TextStyle(fontSize: 16))),
+      ],
+    ),
+  );
 
-  Widget _buildNutritionItem(String label, String value) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(label, style: TextStyle(color: Colors.grey[600])),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget _nutritionItem(String label, String value) => Expanded(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(label, style: TextStyle(color: Colors.grey[600])),
+        const SizedBox(height: 4),
+        Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+      ],
+    ),
+  );
 
   static const _instructions = [
     'Mix flour, yeast, and salt in a large bowl',
