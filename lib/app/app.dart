@@ -45,11 +45,10 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
                 ),
               ),
             ),
-
-            home: SearchScreen(),
-          );
-        }
-
+          ),
+          home: SearchScreen(),
+        );
+      },
     );
   }
 }
