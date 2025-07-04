@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../features/common/ui/screens/main_bottom_nav_screen.dart';
 import '../features/home/screens/home_screen.dart';
 
 
@@ -23,7 +24,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
       return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'RaHriSha Food',
-        home: HomeScreen(),
+        home: MainBottomNavScreen(),
       );
     }
     );
