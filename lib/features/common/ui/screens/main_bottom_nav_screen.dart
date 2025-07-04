@@ -1,7 +1,5 @@
-
 import 'package:flutter/material.dart';
 import 'package:rahrisha_food/features/home/screens/home_screen.dart';
-
 
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
@@ -12,41 +10,35 @@ class MainBottomNavScreen extends StatefulWidget {
 }
 
 class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
-  final int _selectedIndex = 0;
+  int _selectedIndex = 0; // final বাদ দিয়ে stateful করলাম
 
-  final List <Widget>_screens=[
+  final List<Widget> _screens = [
     const HomeScreen(),
-    const Scaffold(),
-    const Scaffold(),
-    const Scaffold(),
-
+    const Scaffold(body: Center(child: Text("Category Screen"))),
+    const Scaffold(body: Center(child: Text("Cart Screen"))),
+    const Scaffold(body: Center(child: Text("Wishlist Screen"))),
   ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index; // index update হচ্ছে এখানে
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:_screens[_selectedIndex],
-        bottomNavigationBar:NavigationBar(
-          destinations: const [
-            NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-            NavigationDestination(
-              icon: Icon(Icons.category),
-              label: 'Category',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.shopping_cart),
-              label: 'Cart',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.favorite_border),
-              label: 'Wishlist',
-            ),
-          ],
-        )
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped, // এটি অ্যাড করো
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.category), label: 'Category'),
+          NavigationDestination(icon: Icon(Icons.shopping_cart), label: 'Cart'),
+          NavigationDestination(icon: Icon(Icons.favorite_border), label: 'Wishlist'),
+        ],
+      ),
     );
   }
 }
-
-
-
-
-

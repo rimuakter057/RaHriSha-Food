@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         Row(
                           children: [
-                            Text("data"),
+                            Text("data",style: TextStyle(color: AppColors.white),),
                             DropdownButton<String>(
                               items: [],
                               onChanged: (value) {},
@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen>
                               onPressed: () {},
                               icon: Icon(
                                 Icons.search,
-                                color: AppColors.primary,
+                                  color: AppColors.white
                               ),
                             ),
                             IconButton(
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen>
                               onPressed: () {},
                               icon: Icon(
                                 Icons.notifications,
-                                color: AppColors.primary,
+                                  color: AppColors.white
                               ),
                             ),
                           ],
@@ -90,11 +90,11 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: 16.sp),
+                        Icon(Icons.location_on, size: 16.sp,color: AppColors.white),
                         SizedBox(width: 4.w),
                         Text(
                           AppText.currentLocation,
-                          style: TextStyle(fontSize: 12.sp),
+                          style: TextStyle(fontSize: 12.sp,color: AppColors.white),
                         ),
                       ],
                     ),
@@ -103,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen>
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14.sp,
+                          color: AppColors.white
                       ),
                     ),
                   ],
@@ -158,8 +159,8 @@ class _HomeScreenState extends State<HomeScreen>
                     // Tab Bar
 
                  Container(
-padding: EdgeInsets.symmetric(vertical: 8.h),
-child: TabBar(
+             padding: EdgeInsets.symmetric(vertical: 8.h),
+             child: TabBar(
 controller: _tabController,
 isScrollable: true,
 labelColor: Colors.white,
@@ -180,7 +181,7 @@ _buildTabItem('Wishlist'),
 _buildTabItem('Profile'),
 ],
 ),
-),
+                ),
                     // TabBarView Content
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.5,
@@ -290,12 +291,17 @@ _buildTabItem('Profile'),
                     SizedBox(height: 4.h),
                     Row(
                       children: [
+                        Icon(Icons.star, size: 16.sp, color: Colors.amber),
                         Text(
                           "Review",
                           style: TextStyle(fontSize: 12.sp),
                         ),
                         SizedBox(width: 4.w),
-                        Icon(Icons.star, size: 16.sp, color: Colors.amber),
+                        Text(
+                          "(12)",
+                          style: TextStyle(fontSize: 8.sp),
+                        ),
+
                       ],
                     ),
                   ],
