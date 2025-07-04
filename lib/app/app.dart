@@ -27,6 +27,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'RaHriSha Food',
+
           theme: ThemeData(
             //this is theme data
             inputDecorationTheme: InputDecorationTheme(
