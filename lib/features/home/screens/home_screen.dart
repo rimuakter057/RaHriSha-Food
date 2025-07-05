@@ -3,7 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/app/assets_path.dart';
+
+import 'package:rahrisha_food/features/home/widgets/home_carousel_slider.dart';
+
 import 'package:rahrisha_food/features/home/screens/widget/carousel_slider.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,7 +18,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+
+
   final List<String> listItems = List.generate(20, (index) => 'List Item ${index + 1}');
+
   late TabController _tabController;
 
   @override
@@ -71,8 +78,9 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               onPressed: () {},
                               icon: Icon(
-                                  Icons.search,
-                                  color: AppColors.white
+                                Icons.search,
+                                color: AppColors.primary,
+                                 
                               ),
                             ),
                             IconButton(
@@ -81,8 +89,9 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               onPressed: () {},
                               icon: Icon(
-                                  Icons.notifications,
-                                  color: AppColors.white
+
+                                Icons.notifications,
+                                color: AppColors.primary,
                               ),
                             ),
                           ],
@@ -111,9 +120,38 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
+
+            // Tab Bar
+            // Tab Bar without divider and left-aligned
+            Column(children: [HomeCarouselSlider()]),
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8.h),
+              child: TabBar(
+                controller: _tabController,
+                isScrollable: true,
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.white70,
+                indicatorColor: Colors.black,
+                labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                // Remove the default divider
+                dividerColor: Colors.transparent,
+                // Remove left padding/indentation
+                padding: EdgeInsets.zero,
+                indicatorPadding: EdgeInsets.zero,
+                tabAlignment: TabAlignment.start, // Force left alignment
+                tabs: [
+                  _buildTabItem('Home'),
+                  _buildTabItem('Explore'),
+                  _buildTabItem('Cart'),
+                  _buildTabItem('Wishlist'),
+                  _buildTabItem('Profile'),
+                ],
+              ),
+            ),
             SizedBox(height: 5,),
             HomeCarouselSlider(),
             // Scrollable Content Area
+
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -212,6 +250,7 @@ class _HomeScreenState extends State<HomeScreen>
         child: Container(
           width: 120.w,
           height: 60.h,
+
           decoration: BoxDecoration(
             color: Colors.deepPurple,
             borderRadius: BorderRadius.circular(15.r),
@@ -248,6 +287,11 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildTabContent(String text) {
+
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(16.0.w),
+        child: Text(text, style: TextStyle(fontSize: 18.sp)),
     return GridView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),

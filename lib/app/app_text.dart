@@ -14,6 +14,11 @@ class AppText {
   static const String forgotPassword = 'Forgot Password?';
   static const String orContinueWith = 'Or continue with';
 
+  //splash screen
+  static const String foodSwift = 'FoodSwift';
+  static const String deliciousFood = 'Delicious Food at your doorstep';
+  static const String version = 'Version - 1.1.1';
+
   // Home
   static const String welcome = 'Welcome';
   static const String searchFood = 'Search for food';
