@@ -3,9 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/app/assets_path.dart';
-
-
-
+import 'package:rahrisha_food/features/home/screens/widget/carousel_slider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,7 +12,9 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  final List<String> listItems = List.generate(20, (index) => 'List Item ${index + 1}');
   late TabController _tabController;
 
   @override
@@ -32,436 +32,315 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // Top Image Container
-          Container(
-            height: 100.h,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(image:AssetImage(AssetsPath.homeTopImage) ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Top Fixed Container (Non-scrolling)
+            Container(
+              height: 150.h,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(AssetsPath.homeTopImage),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("data"),
-                        DropdownButton(items: [], onChanged: (value){}),
+                        Row(
+                          children: [
+                            Text("data",style: TextStyle(color: AppColors.white),),
+                            DropdownButton<String>(
+                              items: [],
+                              onChanged: (value) {},
+                              underline: Container(),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              style: IconButton.styleFrom(
+                                shape: const CircleBorder(),
+                              ),
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.search,
+                                  color: AppColors.white
+                              ),
+                            ),
+                            IconButton(
+                              style: IconButton.styleFrom(
+                                shape: const CircleBorder(),
+                              ),
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.notifications,
+                                  color: AppColors.white
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     Row(
                       children: [
-                        IconButton(
-                            style: IconButton.styleFrom(
-                              shape: OvalBorder(
-
-                              ),
-                            ),
-                            onPressed: (){}, icon: Icon(Icons.search,color: AppColors.primary,)),
-                        IconButton(
-                            style: IconButton.styleFrom(
-                              shape: OvalBorder(
-                              ),
-                            ),
-                            onPressed: (){}, icon: Icon(Icons.notifications,color: AppColors.primary,)),
+                        Icon(Icons.location_on, size: 16.sp,color: AppColors.white),
+                        SizedBox(width: 4.w),
+                        Text(
+                          AppText.currentLocation,
+                          style: TextStyle(fontSize: 12.sp,color: AppColors.white),
+                        ),
                       ],
+                    ),
+                    Text(
+                      "Provide best food",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.sp,
+                          color: AppColors.white
+                      ),
                     ),
                   ],
                 ),
-                Row(
+              ),
+            ),
+            SizedBox(height: 5,),
+            HomeCarouselSlider(),
+            // Scrollable Content Area
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.location_on),
-                    Text(AppText.currentLocation),
+                    // Featured Items ListView
+                    Padding(
+                      padding: EdgeInsets.all(16.w),
+                      child: Text(
+                        'Featured Items',
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 200.h,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: listItems.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            width: 150.w,
+                            margin: EdgeInsets.only(
+                              left: 16.w,
+                              right: index == listItems.length - 1 ? 16.w : 0,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.blue[100],
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Center(
+                              child: Text(
+                                listItems[index],
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+
+                    // Tab Bar
+
+                 Container(
+             padding: EdgeInsets.symmetric(vertical: 8.h),
+             child: TabBar(
+controller: _tabController,
+isScrollable: true,
+labelColor: Colors.white,
+unselectedLabelColor: Colors.white70,
+indicatorColor: Colors.black,
+labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
+// Remove the default divider
+dividerColor: Colors.transparent,
+// Remove left padding/indentation
+padding: EdgeInsets.zero,
+indicatorPadding: EdgeInsets.zero,
+tabAlignment: TabAlignment.start, // Force left alignment
+tabs: [
+_buildTabItem('Home'),
+_buildTabItem('Explore'),
+_buildTabItem('Cart'),
+_buildTabItem('Wishlist'),
+_buildTabItem('Profile'),
+],
+),
+                ),
+                    // TabBarView Content
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          _buildTabContent("Pizza1"),
+                          _buildTabContent('Pizza2'),
+                          _buildTabContent("Pizza3"),
+                          _buildTabContent('Pizza4'),
+                          _buildTabContent('Pizza5'),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                Text("Provide best food",style: TextStyle(fontWeight: FontWeight.bold),),
-              ],
+              ),
             ),
-          ),
-
-          // Tab Bar
-          Container(
-            color: Colors.deepPurple,
-            child: TabBar(
-              controller: _tabController,
-              isScrollable: true,
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.white70,
-              indicatorColor: Colors.amber,
-              tabs: const [
-                Tab(icon: Icon(Icons.home), text: 'Home'),
-                Tab(icon: Icon(Icons.explore), text: 'Explore'),
-                Tab(icon: Icon(Icons.shopping_cart), text: 'Cart'),
-                Tab(icon: Icon(Icons.favorite), text: 'Wishlist'),
-                Tab(icon: Icon(Icons.person), text: 'Profile'),
-              ],
-            ),
-          ),
-
-          // Tab Content
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildTabContent('Home Screen Content'),
-                _buildTabContent('Explore Screen Content'),
-                _buildTabContent('Cart Screen Content'),
-                _buildTabContent('Wishlist Screen Content'),
-                _buildTabContent('Profile Screen Content'),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
 
-      // Floating Action Button with Container
+      // Floating Action Button
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: SizedBox(
-          width: 140,
-          height: 140,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Container part
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  width: 120,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: Colors.deepPurple,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.deepPurple.withOpacity(0.3),
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Quick Menu',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Button part
-              Positioned(
-                top: 0,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Main Action Button Pressed!'),
-                      ),
-                    );
-                  },
-                  backgroundColor: Colors.amber,
-                  child: const Icon(
-                    Icons.add,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-              ),
-            ],
+        padding: EdgeInsets.only(bottom: 20.h),
+        child: Container(
+          width: 120.w,
+          height: 60.h,
+          decoration: BoxDecoration(
+            color: Colors.deepPurple,
+            borderRadius: BorderRadius.circular(15.r),
           ),
+          child: Center(
+            child: Text(
+              'Quick Menu',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14.sp,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabItem(String text) {
+    return Tab(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.r),
+          color: Colors.blue,
+        ),
+        child: Text(
+          text,
+          style: TextStyle(fontSize: 14.sp, color: AppColors.white),
         ),
       ),
     );
   }
 
   Widget _buildTabContent(String text) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(
-          text,
-          style: const TextStyle(fontSize: 18),
-        ),
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.all(16.w),
+      itemCount: 10,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12.w,
+        mainAxisSpacing: 12.h,
+        childAspectRatio: 0.8,
       ),
-    );
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// class HomeScreen extends StatelessWidget {
-//   const HomeScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Featured Recipes'),
-//         centerTitle: true,
-//         elevation: 0,
-//       ),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               // Featured Recipes Section
-//               const SectionHeader(title: 'Featured Recipes'),
-//               const SizedBox(height: 16),
-//               SizedBox(
-//                 height: 220,
-//                 child: ListView(
-//                   scrollDirection: Axis.horizontal,
-//                   children: const [
-//                     RecipeCard(
-//                       title: 'Creamy Pasta Carbonara',
-//                       author: 'Chef Michael',
-//                       width: 160,
-//                     ),
-//                     SizedBox(width: 16),
-//                     RecipeCard(
-//                       title: 'Avocado',
-//                       author: "Emma's M",
-//                       width: 160,
-//                     ),
-//                     SizedBox(width: 16),
-//                     RecipeCard(
-//                       title: 'Breakfast',
-//                       author: 'Vegan',
-//                       width: 160,
-//                     ),
-//                     SizedBox(width: 16),
-//                     RecipeCard(
-//                       title: 'Dessert',
-//                       author: 'Quick & Easy',
-//                       width: 160,
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               const SizedBox(height: 32),
-//
-//               // Popular This Week Section
-//               const SectionHeader(title: 'Popular This Week'),
-//               const SizedBox(height: 16),
-//               GridView.count(
-//                 shrinkWrap: true,
-//                 physics: const NeverScrollableScrollPhysics(),
-//                 crossAxisCount: MediaQuery.of(context).size.width > 600 ? 2 : 1,
-//                 childAspectRatio: 3,
-//                 crossAxisSpacing: 16,
-//                 mainAxisSpacing: 16,
-//                 children: const [
-//                   PopularRecipeItem(
-//                     title: 'Green Smoothie Bowl',
-//                     rating: 4.8,
-//                     reviews: 128,
-//                   ),
-//                   PopularRecipeItem(
-//                     title: 'Classic Burger',
-//                     rating: 4.6,
-//                     reviews: 85,
-//                   ),
-//                   PopularRecipeItem(
-//                     title: 'Salmon Poke Bowl',
-//                     rating: 4.9,
-//                     reviews: 156,
-//                   ),
-//                   PopularRecipeItem(
-//                     title: 'Chocolate Cake',
-//                     rating: 4.7,
-//                     reviews: 112,
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//       bottomNavigationBar: BottomNavigationBar(
-//         type: BottomNavigationBarType.fixed,
-//         items: const [
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.home),
-//             label: 'Home',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.search),
-//             label: 'Search',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.add_circle_outline),
-//             label: 'Add',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.favorite_border),
-//             label: 'Wishlist',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.person_outline),
-//             label: 'Profile',
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-class SectionHeader extends StatelessWidget {
-  final String title;
-
-  const SectionHeader({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-      ),
-    );
-  }
-}
-
-class RecipeCard extends StatelessWidget {
-  final String title;
-  final String author;
-  final double width;
-
-  const RecipeCard({
-    super.key,
-    required this.title,
-    required this.author,
-    this.width = 160,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
+      itemBuilder: (context, index) {
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+                  child: Image.asset(
+                    AssetsPath.homeTopImage,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                author,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
+              Padding(
+                padding: EdgeInsets.all(8.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      children: [
+                        Icon(Icons.star, size: 16.sp, color: Colors.amber),
+                        Text(
+                          "Review",
+                          style: TextStyle(fontSize: 12.sp),
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          "(12)",
+                          style: TextStyle(fontSize: 8.sp),
+                        ),
+
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
 
-class PopularRecipeItem extends StatelessWidget {
-  final String title;
-  final double rating;
-  final int reviews;
 
-  const PopularRecipeItem({
-    super.key,
-    required this.title,
-    required this.rating,
-    required this.reviews,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            const SizedBox(
-              width: 60,
-              height: 60,
-              child: Placeholder(), // Replace with actual image
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.orange[400],
-                        size: 16,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '$rating ($reviews)',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+
+// Container(
+// padding: EdgeInsets.symmetric(vertical: 8.h),
+// child: TabBar(
+// controller: _tabController,
+// isScrollable: true,
+// labelColor: Colors.white,
+// unselectedLabelColor: Colors.white70,
+// indicatorColor: Colors.black,
+// labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
+// // Remove the default divider
+// dividerColor: Colors.transparent,
+// // Remove left padding/indentation
+// padding: EdgeInsets.zero,
+// indicatorPadding: EdgeInsets.zero,
+// tabAlignment: TabAlignment.start, // Force left alignment
+// tabs: [
+// _buildTabItem('Home'),
+// _buildTabItem('Explore'),
+// _buildTabItem('Cart'),
+// _buildTabItem('Wishlist'),
+// _buildTabItem('Profile'),
+// ],
+// ),
+// ),

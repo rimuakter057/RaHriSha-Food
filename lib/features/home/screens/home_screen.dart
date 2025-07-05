@@ -319,28 +319,3 @@ _buildTabItem('Profile'),
 
 
 
-
-// Container(
-// padding: EdgeInsets.symmetric(vertical: 8.h),
-// child: TabBar(
-// controller: _tabController,
-// isScrollable: true,
-// labelColor: Colors.white,
-// unselectedLabelColor: Colors.white70,
-// indicatorColor: Colors.black,
-// labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
-// // Remove the default divider
-// dividerColor: Colors.transparent,
-// // Remove left padding/indentation
-// padding: EdgeInsets.zero,
-// indicatorPadding: EdgeInsets.zero,
-// tabAlignment: TabAlignment.start, // Force left alignment
-// tabs: [
-// _buildTabItem('Home'),
-// _buildTabItem('Explore'),
-// _buildTabItem('Cart'),
-// _buildTabItem('Wishlist'),
-// _buildTabItem('Profile'),
-// ],
-// ),
-// ),
