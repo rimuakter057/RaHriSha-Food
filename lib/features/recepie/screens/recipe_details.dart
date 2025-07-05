@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   const RecipeDetailPage({super.key});
-
+  static const String name='recipe';
   @override
   State<RecipeDetailPage> createState() => _RecipeDetailPageState();
 }

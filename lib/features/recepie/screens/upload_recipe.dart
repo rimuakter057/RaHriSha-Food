@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class UploadRecipe extends StatefulWidget {
   const UploadRecipe({super.key});
-
+  static const String name='upload';
   @override
   State<UploadRecipe> createState() => _UploadRecipeState();
 }

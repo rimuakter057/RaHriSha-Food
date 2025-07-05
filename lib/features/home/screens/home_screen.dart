@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/app/assets_path.dart';
 import 'package:rahrisha_food/features/home/screens/widget/carousel_slider.dart';
+import 'package:rahrisha_food/features/recepie/screens/recipe_details.dart';
+import 'package:rahrisha_food/features/recepie/screens/upload_recipe.dart';
+import 'package:rahrisha_food/features/serch/screens/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-
+  static const String name='sign_in';
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -69,7 +73,9 @@ class _HomeScreenState extends State<HomeScreen>
                               style: IconButton.styleFrom(
                                 shape: const CircleBorder(),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.toNamed(SearchScreen.name);
+                              },
                               icon: Icon(
                                   Icons.search,
                                   color: AppColors.white
@@ -130,32 +136,65 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ),
                     ),
+
+
                     SizedBox(
-                      height: 200.h,
+                      height: 180.h,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: listItems.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            width: 150.w,
-                            margin: EdgeInsets.only(
-                              left: 16.w,
-                              right: index == listItems.length - 1 ? 16.w : 0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.blue[100],
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: Center(
-                              child: Text(
-                                listItems[index],
-                                style: TextStyle(fontSize: 16.sp),
+                          return FittedBox(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 180.w,
+                                    height: 100.h,
+
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      image: DecorationImage(
+                                        image: AssetImage(AssetsPath.homeTopImage), // তোমার ইমেজ পাথ
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "title",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      SizedBox(height: 4.h),
+                                      Text(
+                                        "subtitle",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           );
                         },
                       ),
                     ),
+
+
+
                     SizedBox(height: 24.h),
 
                     // Tab Bar
@@ -205,7 +244,6 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-
       // Floating Action Button
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: 20.h),
@@ -217,12 +255,17 @@ class _HomeScreenState extends State<HomeScreen>
             borderRadius: BorderRadius.circular(15.r),
           ),
           child: Center(
-            child: Text(
-              'Quick Menu',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 14.sp,
+            child: GestureDetector(
+              onTap: (){
+                Get.toNamed(UploadRecipe.name);
+              },
+              child: Text(
+                'ADD',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.sp,
+                ),
               ),
             ),
           ),
@@ -230,7 +273,6 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
-
   Widget _buildTabItem(String text) {
     return Tab(
       child: Container(
@@ -246,7 +288,6 @@ class _HomeScreenState extends State<HomeScreen>
       ),
     );
   }
-
   Widget _buildTabContent(String text) {
     return GridView.builder(
       shrinkWrap: true,
@@ -260,57 +301,84 @@ class _HomeScreenState extends State<HomeScreen>
         childAspectRatio: 0.8,
       ),
       itemBuilder: (context, index) {
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-                  child: Image.asset(
-                    AssetsPath.homeTopImage,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(8.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        return GestureDetector(
+          onTap: (){
+            Get.toNamed(RecipeDetailPage.name);
+          },
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
                   children: [
-                    Text(
-                      text,
-                      style: TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.sp,
+                    // Image
+                    ClipRRect(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+                      child: Image.asset(
+                        AssetsPath.homeTopImage,
+                        width: double.infinity,
+                        height: 150, // height নির্ধারণ করো প্রয়োজনে
+                        fit: BoxFit.cover,
                       ),
                     ),
-                    SizedBox(height: 4.h),
-                    Row(
-                      children: [
-                        Icon(Icons.star, size: 16.sp, color: Colors.amber),
-                        Text(
-                          "Review",
-                          style: TextStyle(fontSize: 12.sp),
+                    // Favorite Icon Positioned on top left
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          shape: BoxShape.circle,
                         ),
-                        SizedBox(width: 4.w),
-                        Text(
-                          "(12)",
-                          style: TextStyle(fontSize: 8.sp),
-                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.favorite, color: Colors.white),
+                          onPressed: () {
 
-                      ],
+                          },
+                          iconSize: 24,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsets.all(8.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        text,
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      SizedBox(height: 4.h),
+                      Row(
+                        children: [
+                          Icon(Icons.star, size: 16.sp, color: Colors.amber),
+                          Text(
+                            "Review",
+                            style: TextStyle(fontSize: 12.sp),
+                          ),
+                          SizedBox(width: 4.w),
+                          Text(
+                            "(12)",
+                            style: TextStyle(fontSize: 8.sp),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
+
         );
       },
     );

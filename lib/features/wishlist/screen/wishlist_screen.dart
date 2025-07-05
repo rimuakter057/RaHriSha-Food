@@ -74,7 +74,7 @@ mixin FavouritesUIMixin implements FavouritesUI {
 
 class FavouritesScreen extends StatelessWidget with FavouritesUIMixin {
   FavouritesScreen({super.key});
-
+  static const name = 'favourite-list';
   final List<Map<String, dynamic>> favourites = const [
     {
       'restaurant': 'Pizza Express',

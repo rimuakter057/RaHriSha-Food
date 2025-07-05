@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:rahrisha_food/features/auth/ui/screens/splash_screen.dart';
 import '../features/common/ui/screens/main_bottom_nav_screen.dart';
+import 'app_routes.dart';
 
 
 class RaHriShaFood extends StatefulWidget {
@@ -44,7 +45,8 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
               ),
             ),
           ),
-          home: MainBottomNavScreen(),
+          initialRoute: SplashScreen.name,
+          onGenerateRoute: AppRoutes.onGenerateRoute,
         );
       },
     );

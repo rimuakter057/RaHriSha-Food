@@ -4,7 +4,7 @@ import 'package:rahrisha_food/core/widgets/delete_popup.dart';
 
 class RecipeEditPage extends StatelessWidget {
   const RecipeEditPage({super.key});
-
+  static const String name='edit';
   Widget labeledField(String label, String hint, {int maxLines = 1}) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 8),
     child: Column(

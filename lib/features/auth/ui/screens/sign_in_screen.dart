@@ -2,7 +2,13 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_text.dart';
+import 'package:rahrisha_food/features/auth/ui/screens/sign_up_screen.dart';
+import 'package:rahrisha_food/features/common/ui/screens/main_bottom_nav_screen.dart';
+import 'package:rahrisha_food/features/home/screens/home_screen.dart';
+
+import 'forgot_password.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -108,7 +114,9 @@ class _SignInScreenState extends State<SignInScreen> {
               Text('Remember Me'),
               Spacer(),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Get.toNamed( ForgotPasswordScreen.name);
+                },
                 child: Text(
                   AppText.forgotPassword,
                   style: TextStyle(color: Colors.orange),
@@ -123,7 +131,7 @@ class _SignInScreenState extends State<SignInScreen> {
             child: ElevatedButton(
               onPressed: () {
                 if(_formKey.currentState!.validate()){
-
+                  Get.toNamed( MainBottomNavScreen.name);
                 }
               },
               child: Text(AppText.login, style: TextStyle(color: Colors.white)),
@@ -136,6 +144,7 @@ class _SignInScreenState extends State<SignInScreen> {
               Text("don't have an account?"),
               GestureDetector(
                 onTap: () {
+                  Get.toNamed( SignUpScreen.name);
                 },
                 child: Text(
                   AppText.signup,

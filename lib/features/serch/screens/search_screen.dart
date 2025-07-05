@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
-
+  static const String name='search';
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

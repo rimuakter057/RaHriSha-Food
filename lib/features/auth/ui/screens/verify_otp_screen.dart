@@ -6,7 +6,7 @@ import 'package:rahrisha_food/app/app_text.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
   const VerifyOtpScreen({super.key});
-
+  static const String name='verify';
   @override
   State<VerifyOtpScreen> createState() => _VerifyOtpScreenState();
 }

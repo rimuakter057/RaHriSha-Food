@@ -1,11 +1,13 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_text.dart';
+import 'package:rahrisha_food/features/auth/ui/screens/verify_otp_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
-
+  static const String name='forget_pass';
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
@@ -83,7 +85,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: ElevatedButton(
               onPressed: () {
                 if(_formKey.currentState!.validate()){
-
+                  Get.toNamed(VerifyOtpScreen.name);
                 }
               },
               child: Text('Send Code', style: TextStyle(color: Colors.white)),

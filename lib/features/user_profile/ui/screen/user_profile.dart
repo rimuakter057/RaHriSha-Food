@@ -6,7 +6,7 @@ import 'package:rahrisha_food/app/app_colors.dart';
 
 class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
-
+  static const String name='profile';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

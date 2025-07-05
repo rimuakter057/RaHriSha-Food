@@ -1,12 +1,14 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
+import 'package:rahrisha_food/features/auth/ui/screens/sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
-
+  static const String name='sign_up';
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
@@ -155,7 +157,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: ElevatedButton(
               onPressed: () {
                 if(_formKey.currentState!.validate()){
-
+            Get.toNamed(SignInScreen.name);
                 }
               },
               child: Text(AppText.signup, style: TextStyle(color: Colors.white)),
@@ -167,7 +169,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             children: [
               Text("Already Existing Account?"),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Get.toNamed(SignInScreen.name);
+                },
                 child: Text(
                   AppText.login,
                   style: TextStyle(

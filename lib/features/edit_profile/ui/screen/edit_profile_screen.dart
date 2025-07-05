@@ -5,7 +5,7 @@ import 'package:rahrisha_food/app/app_text.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
-
+  static const name = '/edit_profile';
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }

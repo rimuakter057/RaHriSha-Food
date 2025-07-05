@@ -9,7 +9,7 @@ import '../../../wishlist/screen/wishlist_screen.dart';
 
 class MainBottomNavScreen extends StatefulWidget {
   const MainBottomNavScreen({super.key});
-  static const routeName = '/nav-screen';
+  static const name = '/nav-screen';
 
   @override
   State<MainBottomNavScreen> createState() => _MainBottomNavScreenState();
