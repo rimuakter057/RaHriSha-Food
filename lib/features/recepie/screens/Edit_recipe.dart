@@ -5,220 +5,179 @@ import 'package:rahrisha_food/core/widgets/delete_popup.dart';
 class RecipeEditPage extends StatelessWidget {
   const RecipeEditPage({super.key});
 
-  Widget _buildLabeledField(String label, String hint, {int maxLines = 1}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0), // Increased spacing
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(fontSize: 16)),
-          const SizedBox(height: 6),
-          TextField(
-            maxLines: maxLines,
-            decoration: InputDecoration(hintText: hint),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget labeledField(String label, String hint, {int maxLines = 1}) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontSize: 16)),
+        const SizedBox(height: 6),
+        TextField(
+          maxLines: maxLines,
+          decoration: InputDecoration(hintText: hint),
+        ),
+      ],
+    ),
+  );
 
-  Widget _buildTripleColumn(List<List<String>> fields) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: List.generate(
-            fields.length,
-                (col) => Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(
-                  fields[col].length,
-                      (row) => Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0), // More vertical spacing
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: fields[col][row],
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                      ),
-                    ),
-                  ),
+  Widget tripleColumn(List<List<String>> fields) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: List.generate(
+      fields.length,
+          (col) => Expanded(
+        child: Padding(
+          padding: EdgeInsets.only(right: col != fields.length - 1 ? 12 : 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: fields[col]
+                .map((hint) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: hint,
+                  contentPadding:
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
                 ),
               ),
-            ),
-          ).expand(
-                (widget) sync* {
-              yield widget;
-              if (widget != fields.last) {
-                yield const SizedBox(width: 12); // Space between columns
-              }
-            },
-          ).toList(),
-        );
-      },
-    );
-  }
-
-  Widget _buildStep(int step, String hint) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0), // Spacing between steps
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(radius: 14, child: Text('$step')),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              maxLines: 3,
-              decoration: InputDecoration(hintText: hint),
-            ),
+            ))
+                .toList(),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
-        ],
+        ),
       ),
-    );
-  }
+    ),
+  );
 
-  Widget _buildHeaderWithAction(String title, String actionText, VoidCallback onTap) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0), // Spacing above and below header
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          InkWell(
-            onTap: onTap,
-            child: Row(children: [const Icon(Icons.add), Text(actionText)]),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget stepField(int step, String hint) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CircleAvatar(radius: 14, child: Text('$step')),
+        const SizedBox(width: 8),
+        Expanded(
+          child: TextField(maxLines: 3, decoration: InputDecoration(hintText: hint)),
+        ),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.add)),
+      ],
+    ),
+  );
+
+  Widget headerWithAction(String title, String actionText, VoidCallback onTap) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        InkWell(
+          onTap: onTap,
+          child: Row(children: [const Icon(Icons.add), Text(actionText)]),
+        ),
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final w = MediaQuery.of(context).size.width;
+    final hp = w < 500 ? 16.0 : w * 0.1;
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () { Get.back(); }, icon: const Icon(Icons.arrow_back_ios)),
+        leading: IconButton(onPressed: Get.back, icon: const Icon(Icons.arrow_back_ios)),
         title: const Text('Edit your recipe'),
         actions: [
           TextButton(
             onPressed: () {},
-            child: const Text(
-              "Cancel",
-              style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18),
-            ),
+            child: const Text("Cancel",
+                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 18)),
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          double horizontalPadding = screenWidth < 500 ? 16 : screenWidth * 0.1;
-
-          return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: hp, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  'https://i.ibb.co/spKbQv5c/FRAME.png',
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text("Change Photo", style: TextStyle(color: Colors.grey)),
+            const SizedBox(height: 16),
+            labeledField("Recipe Name", "Healthy Quinoa Bowl!"),
+            labeledField(
+              "Description",
+              "A nutritious and delicious quinoa bowl packed with fresh vegetables and protein.",
+              maxLines: 3,
+            ),
+            const SizedBox(height: 16),
+            Row(
               children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      'https://i.ibb.co/spKbQv5c/FRAME.png',
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text("Change Photo", style: TextStyle(color: Colors.grey)),
-                const SizedBox(height: 16),
-
-                _buildLabeledField("Recipe Name", "Healthy Quinoa Bowl!"),
-                _buildLabeledField(
-                  "Description",
-                  "A nutritious and delicious quinoa bowl packed with fresh vegetables and protein.",
-                  maxLines: 3,
-                ),
-
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(child: _buildLabeledField("Prep Time", "20 min")),
-                    const SizedBox(width: 12),
-                    Expanded(child: _buildLabeledField("Cook Time", "15 min")),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(child: _buildLabeledField("Serving", "4")),
-                    const SizedBox(width: 12),
-                    Expanded(child: _buildLabeledField("Difficulty", "Easy")),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-                _buildHeaderWithAction("Ingredients", "Add Ingredient", () {}),
-                const SizedBox(height: 8),
-                _buildTripleColumn([
-                  ["2 cups", "1", "2 cups"],
-                  ["Cooked", "Medium", "Mixed"],
-                  ["Quinoa", "Avocado", "Chopped Vegetable"]
-                ]),
-
-                const SizedBox(height: 20),
-                _buildHeaderWithAction("Instructions", "Add Step", () {}),
-                _buildStep(1, 'Rinse quinoa thoroughly and cook according to package instructions.'),
-                _buildStep(2, 'Slice avocado and chop vegetables.'),
-                _buildStep(3, 'Combine all ingredients in a bowl and season to taste.'),
-
-                const SizedBox(height: 20),
-                const Text("Categories", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                const SizedBox(height: 8),
-                Wrap(
-                  spacing: 8,
-                  children: const [
-                    Chip(label: Text('Healthy')),
-                    Chip(label: Text('Vegetarian')),
-                    Chip(label: Text('Quick and easy')),
-                  ],
-                ),
-
-                const SizedBox(height: 20),
-                _buildLabeledField("Tags", "lunch, healthy, vegetarian"),
-
-                const SizedBox(height: 20),
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      showConfirmDeleteDialog(
-                        context: context,
-                        title: 'Delete Recipe?',
-                        message: 'Are you sure you want to permanently delete this recipe? This action cannot be undone.',
-                        onConfirm: () {},
-                      );
-                    },
-                    child: const Text(
-                      "Delete Recipe",
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
+                Expanded(child: labeledField("Prep Time", "20 min")),
+                const SizedBox(width: 12),
+                Expanded(child: labeledField("Cook Time", "15 min")),
               ],
             ),
-          );
-        },
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: labeledField("Serving", "4")),
+                const SizedBox(width: 12),
+                Expanded(child: labeledField("Difficulty", "Easy")),
+              ],
+            ),
+            const SizedBox(height: 20),
+            headerWithAction("Ingredients", "Add Ingredient", () {}),
+            const SizedBox(height: 8),
+            tripleColumn([
+              ["2 cups", "1", "2 cups"],
+              ["Cooked", "Medium", "Mixed"],
+              ["Quinoa", "Avocado", "Chopped Vegetable"]
+            ]),
+            const SizedBox(height: 20),
+            headerWithAction("Instructions", "Add Step", () {}),
+            stepField(1, 'Rinse quinoa thoroughly and cook according to package instructions.'),
+            stepField(2, 'Slice avocado and chop vegetables.'),
+            stepField(3, 'Combine all ingredients in a bowl and season to taste.'),
+            const SizedBox(height: 20),
+            const Text("Categories", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            const SizedBox(height: 8),
+            const Wrap(
+              spacing: 8,
+              children: [
+                Chip(label: Text('Healthy')),
+                Chip(label: Text('Vegetarian')),
+                Chip(label: Text('Quick and easy')),
+              ],
+            ),
+            const SizedBox(height: 20),
+            labeledField("Tags", "lunch, healthy, vegetarian"),
+            const SizedBox(height: 20),
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  showConfirmDeleteDialog(
+                    context: context,
+                    title: 'Delete Recipe?',
+                    message:
+                    'Are you sure you want to permanently delete this recipe? This action cannot be undone.',
+                    onConfirm: () {},
+                  );
+                },
+                child: const Text("Delete Recipe",
+                    style: TextStyle(color: Colors.red, fontSize: 18, fontWeight: FontWeight.bold)),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
