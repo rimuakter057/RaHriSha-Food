@@ -24,7 +24,7 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
    const RecipeDetailPage (),
     const UploadRecipe(),
     const SearchScreen(),
-    const FavouritesScreen(),
+    FavouritesScreen(),
   ];
 
   void _onItemTapped(int index) {
