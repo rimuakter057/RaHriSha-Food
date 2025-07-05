@@ -44,7 +44,11 @@ dependencies:
   fluttertoast: ^8.2.12
   carousel_slider: ^5.1.1
   badges: ^3.1.2
+  font_awesome_flutter: ^10.8.0
+  email_validator: ^3.0.0
+  flutter_svg: ^2.2.0
   flutter_dotenv: ^5.2.1
+
 
 dev_dependencies:
   flutter_test:
