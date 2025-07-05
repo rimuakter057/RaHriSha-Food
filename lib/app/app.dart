@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:rahrisha_food/app/app_colors.dart';
-
+import '../features/common/ui/screens/main_bottom_nav_screen.dart';
 
 class RaHriShaFood extends StatefulWidget {
   const RaHriShaFood({super.key});
@@ -18,35 +17,34 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
       designSize: const Size(393, 852),
       minTextAdapt: true,
       splitScreenMode: true,
-    builder: (context, child) {
-      return GetMaterialApp(
-        theme: ThemeData(
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.secondary,
-              shape: RoundedRectangleBorder(
+
+      builder: (context, child) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'RaHriSha Food',
+
+          theme: ThemeData(
+            //this is theme data
+            inputDecorationTheme: InputDecorationTheme(
+              border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey.shade100),
+              ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                fixedSize: Size(double.infinity, 50),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.deepOrange,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
           ),
-          textTheme: TextTheme(
-            titleLarge: TextStyle(
-                fontSize: 28.sp,
-              fontWeight: FontWeight.bold,
-              color: AppColors.white
-            ),
-            titleSmall: TextStyle(
-                color: Colors.white70,
-                fontSize: 14.sp
-            ),
-          ),
-        ),
-      debugShowCheckedModeBanner: false,
-      title: 'RaHriShaFood',
-      );
-    }
+          home: MainBottomNavScreen(),
+        );
+      },
     );
   }
 }
-
-
