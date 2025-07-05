@@ -4,8 +4,13 @@ class AppText {
   // Authentication
   static const String login = 'Login';
   static const String signup = 'Sign Up';
+  static const String save = 'Save';
+  static const String name = 'Full Name';
   static const String email = 'Email';
+  static const String phoneNumber = 'Phone Number';
+  static const String bio = 'Bio';
   static const String password = 'Password';
+  static const String confirmPassword = 'Confirm Password';
   static const String forgotPassword = 'Forgot Password?';
   static const String orContinueWith = 'Or continue with';
 

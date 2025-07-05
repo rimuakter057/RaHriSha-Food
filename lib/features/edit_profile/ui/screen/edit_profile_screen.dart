@@ -1,47 +1,55 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _nameTEController = TextEditingController();
   final TextEditingController _emailTEController = TextEditingController();
-  final TextEditingController _passwordTEController = TextEditingController();
-  final TextEditingController _confirmPasswordTEController = TextEditingController();
+  final TextEditingController _numberTEController = TextEditingController();
+  final TextEditingController _bioTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme =Theme.of(context).textTheme;
     return Scaffold(
-      backgroundColor: Color(0xFF0A0C2D),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(AppText.editProfile),
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 80.h),
-            Text(
-              AppText.signup,
-              style: textTheme.titleLarge,
+            SizedBox(height: 20.h),
+            Stack(
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage('https://scontent.fdac4-2.fna.fbcdn.net/v/t39.30808-6/294359382_1763304350685659_1729060842648557887_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=a5f93a&_nc_eui2=AeF4gQRb3G_cwGPWkiMKL79ncCB0qDdHrLhwIHSoN0esuElL5C7hrZF98Lf76n3ycgLmisIJ6_V-_Mw4ZiOHRQ53&_nc_ohc=rimwE9PRXY8Q7kNvwHQRodh&_nc_oc=AdnzWk2R47cxoDO6LaWCMK8YbH7jtAzPaMaNr1bWdJ43uV1JKrStPCG7o556GkwzfuF8CHqX0dClZfaSZ_z2sHXC&_nc_zt=23&_nc_ht=scontent.fdac4-2.fna&_nc_gid=5HRaZpbP-NF9N_KOgNnAxg&oh=00_AfPSEFOAxPVoUS4c2Z7NRRVaF9CxjgoPkYt6iV5O_f1M8A&oe=686E30DC'),
+                  radius: 70.r,
+                ),
+                Positioned(
+                  bottom: 2.sp,
+                    right: 2.sp,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.orange,
+                      child: Icon(Icons.edit,color: Colors.white,),
+                    )
+                ),
+              ],
             ),
-            SizedBox(height: 8.h),
-            Text(
-              'Please sign up to get started',
-              style: textTheme.titleSmall,
-            ),
-            SizedBox(height: 50.h),
+            SizedBox(height: 30.h),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 24.sp, vertical: 50.sp),
-              height: 695.h,
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 30),
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: Colors.white,
                 borderRadius: BorderRadius.only(topRight: Radius.circular(24),topLeft: Radius.circular(24)),
               ),
               child: _buildSignUpForm(),
@@ -103,14 +111,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             },
           ),
           SizedBox(height: 20.h),
-          Text(AppText.password, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(AppText.phoneNumber, style: TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: 8.h),
           TextFormField(
-            controller: _passwordTEController,
+            controller: _numberTEController,
             obscureText: true,
             decoration: InputDecoration(
-              hintText: 'Password',
-              suffixIcon: Icon(Icons.remove_red_eye),
+              hintText: 'Phone Number',
               filled: true,
               fillColor: Colors.grey[200],
               border: OutlineInputBorder(
@@ -119,21 +126,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             validator: (String? value) {
-              if ((value?.trim().isEmpty ?? true) || value!.length < 6) {
-                return 'Please Enter A Password More Than 6 Letters';
+              if ((value?.trim().isEmpty ?? true)) {
+                return 'Please Enter You Phone Number';
               }
               return null;
             },
           ),
           SizedBox(height: 20.h),
-          Text(AppText.confirmPassword, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(AppText.bio, style: TextStyle(fontWeight: FontWeight.bold)),
           SizedBox(height: 8),
           TextFormField(
-            controller: _confirmPasswordTEController,
-            obscureText: true,
+            controller: _bioTEController,
+            maxLines: 3,
             decoration: InputDecoration(
-              hintText: AppText.confirmPassword,
-              suffixIcon: Icon(Icons.remove_red_eye),
+              hintText: 'I love fast food',
               filled: true,
               fillColor: Colors.grey[200],
               border: OutlineInputBorder(
@@ -142,8 +148,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             validator: (String? value) {
-              if ((value?.trim().isEmpty ?? true) || value!.length < 6) {
-                return 'Please Enter A Password More Than 6 Letters';
+              if ((value?.trim().isEmpty ?? true)) {
+                return 'Please Enter You Phone Number';
               }
               return null;
             },
@@ -158,25 +164,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 }
               },
-              child: Text(AppText.signup, style: TextStyle(color: Colors.white)),
+              child: Text(AppText.save, style: TextStyle(color: Colors.white)),
             ),
-          ),
-          SizedBox(height: 16.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Already Existing Account?"),
-              GestureDetector(
-                onTap: () {},
-                child: Text(
-                  AppText.login,
-                  style: TextStyle(
-                    color: Colors.orange,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
           ),
         ],
       ),

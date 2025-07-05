@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+
 import 'package:rahrisha_food/features/auth/ui/screens/splash_screen.dart';
+import '../features/common/ui/screens/main_bottom_nav_screen.dart';
+
 
 class RaHriShaFood extends StatefulWidget {
   const RaHriShaFood({super.key});
@@ -22,7 +25,6 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'RaHriSha Food',
-
           theme: ThemeData(
             //this is theme data
             inputDecorationTheme: InputDecorationTheme(
@@ -42,8 +44,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
               ),
             ),
           ),
-
-          home: SplashScreen(),
+          home: MainBottomNavScreen(),
         );
       },
     );

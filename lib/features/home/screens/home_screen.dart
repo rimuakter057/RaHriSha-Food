@@ -3,7 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/app/assets_path.dart';
+
 import 'package:rahrisha_food/features/home/widgets/home_carousel_slider.dart';
+
+import 'package:rahrisha_food/features/home/screens/widget/carousel_slider.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,6 +18,10 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
+
+
+  final List<String> listItems = List.generate(20, (index) => 'List Item ${index + 1}');
+
   late TabController _tabController;
 
   @override
@@ -34,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen>
       body: SafeArea(
         child: Column(
           children: [
-            // Top Image Container
+            // Top Fixed Container (Non-scrolling)
             Container(
               height: 150.h,
               width: double.infinity,
@@ -54,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         Row(
                           children: [
-                            Text("data"),
+                            Text("data",style: TextStyle(color: AppColors.white),),
                             DropdownButton<String>(
                               items: [],
                               onChanged: (value) {},
@@ -72,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen>
                               icon: Icon(
                                 Icons.search,
                                 color: AppColors.primary,
+                                 
                               ),
                             ),
                             IconButton(
@@ -80,6 +89,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               onPressed: () {},
                               icon: Icon(
+
                                 Icons.notifications,
                                 color: AppColors.primary,
                               ),
@@ -90,25 +100,27 @@ class _HomeScreenState extends State<HomeScreen>
                     ),
                     Row(
                       children: [
-                        Icon(Icons.location_on, size: 16.sp),
+                        Icon(Icons.location_on, size: 16.sp,color: AppColors.white),
                         SizedBox(width: 4.w),
                         Text(
                           AppText.currentLocation,
-                          style: TextStyle(fontSize: 12.sp),
+                          style: TextStyle(fontSize: 12.sp,color: AppColors.white),
                         ),
                       ],
                     ),
                     Text(
                       "Provide best food",
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.sp,
+                          color: AppColors.white
                       ),
                     ),
                   ],
                 ),
               ),
             ),
+
             // Tab Bar
             // Tab Bar without divider and left-aligned
             Column(children: [HomeCarouselSlider()]),
@@ -136,28 +148,109 @@ class _HomeScreenState extends State<HomeScreen>
                 ],
               ),
             ),
+            SizedBox(height: 5,),
+            HomeCarouselSlider(),
+            // Scrollable Content Area
+
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildTabContent('Home Screen Content'),
-                  _buildTabContent('Explore Screen Content'),
-                  _buildTabContent('Cart Screen Content'),
-                  _buildTabContent('Wishlist Screen Content'),
-                  _buildTabContent('Profile Screen Content'),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Featured Items ListView
+                    Padding(
+                      padding: EdgeInsets.all(16.w),
+                      child: Text(
+                        'Featured Items',
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 200.h,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: listItems.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            width: 150.w,
+                            margin: EdgeInsets.only(
+                              left: 16.w,
+                              right: index == listItems.length - 1 ? 16.w : 0,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.blue[100],
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Center(
+                              child: Text(
+                                listItems[index],
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 24.h),
+
+                    // Tab Bar
+
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: TabBar(
+                        controller: _tabController,
+                        isScrollable: true,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.white70,
+                        indicatorColor: Colors.black,
+                        labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
+// Remove the default divider
+                        dividerColor: Colors.transparent,
+// Remove left padding/indentation
+                        padding: EdgeInsets.zero,
+                        indicatorPadding: EdgeInsets.zero,
+                        tabAlignment: TabAlignment.start, // Force left alignment
+                        tabs: [
+                          _buildTabItem('Home'),
+                          _buildTabItem('Explore'),
+                          _buildTabItem('Cart'),
+                          _buildTabItem('Wishlist'),
+                          _buildTabItem('Profile'),
+                        ],
+                      ),
+                    ),
+                    // TabBarView Content
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      child: TabBarView(
+                        controller: _tabController,
+                        children: [
+                          _buildTabContent("Pizza1"),
+                          _buildTabContent('Pizza2'),
+                          _buildTabContent("Pizza3"),
+                          _buildTabContent('Pizza4'),
+                          _buildTabContent('Pizza5'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
 
-      // Floating Action Button with Container
+      // Floating Action Button
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: 20.h),
         child: Container(
-          width: double.infinity,
-          height: 80.h,
+          width: 120.w,
+          height: 60.h,
+
           decoration: BoxDecoration(
             color: Colors.deepPurple,
             borderRadius: BorderRadius.circular(15.r),
@@ -194,11 +287,76 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildTabContent(String text) {
+
     return Center(
       child: Padding(
         padding: EdgeInsets.all(16.0.w),
         child: Text(text, style: TextStyle(fontSize: 18.sp)),
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.all(16.w),
+      itemCount: 10,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 12.w,
+        mainAxisSpacing: 12.h,
+        childAspectRatio: 0.8,
       ),
+      itemBuilder: (context, index) {
+        return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
+                  child: Image.asset(
+                    AssetsPath.homeTopImage,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      text,
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      children: [
+                        Icon(Icons.star, size: 16.sp, color: Colors.amber),
+                        Text(
+                          "Review",
+                          style: TextStyle(fontSize: 12.sp),
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          "(12)",
+                          style: TextStyle(fontSize: 8.sp),
+                        ),
+
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
