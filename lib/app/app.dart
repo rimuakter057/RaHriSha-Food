@@ -8,6 +8,8 @@ import 'package:rahrisha_food/features/recepie/screens/upload_recipe.dart';
 import 'package:rahrisha_food/features/serch/screens/search_screen.dart';
 import 'package:rahrisha_food/features/wishlist/screen/wishlist_screen.dart';
 
+import '../features/common/ui/screens/main_bottom_nav_screen.dart';
+
 class RaHriShaFood extends StatefulWidget {
   const RaHriShaFood({super.key});
 
@@ -47,7 +49,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
               ),
             ),
           ),
-          home: SearchScreen(),
+          home: MainBottomNavScreen(),
         );
       },
     );
