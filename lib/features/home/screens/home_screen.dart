@@ -71,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               onPressed: () {},
                               icon: Icon(
-                                Icons.search,
+                                  Icons.search,
                                   color: AppColors.white
                               ),
                             ),
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen>
                               ),
                               onPressed: () {},
                               icon: Icon(
-                                Icons.notifications,
+                                  Icons.notifications,
                                   color: AppColors.white
                               ),
                             ),
@@ -102,8 +102,8 @@ class _HomeScreenState extends State<HomeScreen>
                     Text(
                       "Provide best food",
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.sp,
                           color: AppColors.white
                       ),
                     ),
@@ -160,30 +160,30 @@ class _HomeScreenState extends State<HomeScreen>
 
                     // Tab Bar
 
-                 Container(
-             padding: EdgeInsets.symmetric(vertical: 8.h),
-             child: TabBar(
-controller: _tabController,
-isScrollable: true,
-labelColor: Colors.white,
-unselectedLabelColor: Colors.white70,
-indicatorColor: Colors.black,
-labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: TabBar(
+                        controller: _tabController,
+                        isScrollable: true,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.white70,
+                        indicatorColor: Colors.black,
+                        labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
 // Remove the default divider
-dividerColor: Colors.transparent,
+                        dividerColor: Colors.transparent,
 // Remove left padding/indentation
-padding: EdgeInsets.zero,
-indicatorPadding: EdgeInsets.zero,
-tabAlignment: TabAlignment.start, // Force left alignment
-tabs: [
-_buildTabItem('Home'),
-_buildTabItem('Explore'),
-_buildTabItem('Cart'),
-_buildTabItem('Wishlist'),
-_buildTabItem('Profile'),
-],
-),
-                ),
+                        padding: EdgeInsets.zero,
+                        indicatorPadding: EdgeInsets.zero,
+                        tabAlignment: TabAlignment.start, // Force left alignment
+                        tabs: [
+                          _buildTabItem('Home'),
+                          _buildTabItem('Explore'),
+                          _buildTabItem('Cart'),
+                          _buildTabItem('Wishlist'),
+                          _buildTabItem('Profile'),
+                        ],
+                      ),
+                    ),
                     // TabBarView Content
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.5,
@@ -316,6 +316,3 @@ _buildTabItem('Profile'),
     );
   }
 }
-
-
-
