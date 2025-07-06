@@ -4,6 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
+import 'package:rahrisha_food/core/widgets/delete_popup.dart';
+import 'package:rahrisha_food/core/widgets/show_success_toast.dart';
+import 'package:rahrisha_food/features/auth/controllers/sign_up_controller.dart';
 import 'package:rahrisha_food/features/auth/ui/screens/sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -19,6 +22,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final TextEditingController _confirmPasswordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final SignUpController _authController = Get.put(SignUpController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -155,11 +160,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
             width: double.infinity,
             height: 50.h,
             child: ElevatedButton(
-              onPressed: () {
-                if(_formKey.currentState!.validate()){
-            Get.toNamed(SignInScreen.name);
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  final name = _nameTEController.text.trim();
+                  final email = _emailTEController.text.trim();
+                  final password = _passwordTEController.text.trim();
+                  final confirmPassword = _confirmPasswordTEController.text.trim();
+
+                  if (password != confirmPassword) {
+                    Get.snackbar('Error', 'Passwords do not match.');
+                    return;
+                  }
+
+                  // Call sign up
+                  final isSuccess = await _authController.signUp(name, email, password);
+
+                  if (isSuccess) {
+                    showSuccessToast(
+                      context: context,
+                      icon: Icons.done,
+                      title: 'Sign up success',
+                    );
+                    Get.to(() => SignInScreen());
+                  } else {
+                    Get.snackbar('Error', 'Sign up failed. Try again.');
+                  }
                 }
               },
+
               child: Text(AppText.signup, style: TextStyle(color: Colors.white)),
             ),
           ),

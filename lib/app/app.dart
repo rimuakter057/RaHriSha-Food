@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
+import 'package:rahrisha_food/app/controller_binder.dart';
 
 import 'package:rahrisha_food/features/auth/ui/screens/splash_screen.dart';
 import '../features/auth/ui/screens/sign_in_screen.dart';
@@ -25,6 +26,7 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
       splitScreenMode: true,
 
       builder: (context, child) {
+
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'RaHriSha Food',
@@ -49,6 +51,8 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
           ),
           initialRoute: SplashScreen.name,
           onGenerateRoute: AppRoutes.onGenerateRoute,
+initialBinding: ControllerBinder(),
+
         );
       },
     );
