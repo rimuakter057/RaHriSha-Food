@@ -5,6 +5,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
+import 'package:rahrisha_food/core/widgets/delete_popup.dart';
+import 'package:rahrisha_food/core/widgets/show_success_toast.dart';
+import 'package:rahrisha_food/features/auth/controllers/sign_in_controller.dart';
 import 'package:rahrisha_food/features/auth/ui/screens/sign_up_screen.dart';
 import 'package:rahrisha_food/features/common/ui/screens/main_bottom_nav_screen.dart';
 import 'package:rahrisha_food/features/home/screens/home_screen.dart';
@@ -131,10 +134,15 @@ class _SignInScreenState extends State<SignInScreen> {
             height: 50.h,
             child: ElevatedButton(
               onPressed: () {
-                if(_formKey.currentState!.validate()){
-                  Get.toNamed( MainBottomNavScreen.name);
+                if (_formKey.currentState!.validate()) {
+                  final email = _emailTEController.text.trim();
+                  final password = _passwordTEController.text.trim();
+                  Get.find<SignInController>().login(email, password);
+                  showSuccessToast(context: context, icon: Icons.done, title: 'Sign in success',);
+                  //Get.to(MainBottomNavScreen());
                 }
               },
+
               child: Text(AppText.login, style: TextStyle(color: Colors.white)),
             ),
           ),

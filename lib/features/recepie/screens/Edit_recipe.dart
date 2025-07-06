@@ -166,6 +166,7 @@ class RecipeEditPage extends StatelessWidget {
                 onPressed: () {
                   showConfirmDeleteDialog(
                     context: context,
+                    icon:Icons.warning_amber_rounded,
                     title: 'Delete Recipe?',
                     message:
                     'Are you sure you want to permanently delete this recipe? This action cannot be undone.',

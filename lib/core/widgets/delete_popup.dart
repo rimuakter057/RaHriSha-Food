@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 void showConfirmDeleteDialog({
+
   required BuildContext context,
+  required IconData icon,
   required String title,
   required String message,
   required VoidCallback onConfirm,
@@ -15,7 +17,7 @@ void showConfirmDeleteDialog({
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.warning_rounded, size: 48, color: Colors.red),
+            Icon(icon,size: 48,),
             const SizedBox(height: 16),
             Text(
               title,
