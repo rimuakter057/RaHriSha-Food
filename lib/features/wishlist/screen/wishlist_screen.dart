@@ -6,7 +6,6 @@ abstract class FavouritesUI {
     required String imageUrl,
     required String restaurant,
     required String itemName,
-    required String price,
     required double rating,
     required String time,
   });
@@ -18,56 +17,51 @@ mixin FavouritesUIMixin implements FavouritesUI {
     required String imageUrl,
     required String restaurant,
     required String itemName,
-    required String price,
     required double rating,
     required String time,
   }) =>
-      SizedBox(
-        height: 300,
-        child: Card(
-          elevation: 4,
-          shadowColor: Colors.black.withOpacity(0.1),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AspectRatio(
-                aspectRatio: 4 / 3,
-                child: Image.network(imageUrl, width: double.infinity, fit: BoxFit.cover),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(restaurant, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                      Text(itemName, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-                      const Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(price, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.deepOrange)),
-                          Row(children: [
-                            Icon(Icons.star, color: Colors.amber[700], size: 16),
-                            Text(' $rating', style: const TextStyle(fontSize: 12)),
-                          ]),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(Icons.access_time, color: Colors.grey[600], size: 16),
-                          Text(' $time', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
-                        ],
-                      ),
-                    ],
-                  ),
+      Card(
+        elevation: 4,
+        shadowColor: Colors.black.withOpacity(0.1),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 4 / 3,
+              child: Image.network(imageUrl, width: double.infinity, fit: BoxFit.cover),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(restaurant, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                    Text(itemName, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                    const Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                       Row(children: [
+                          Icon(Icons.star, color: Colors.amber[700], size: 16),
+                          Text(' $rating', style: const TextStyle(fontSize: 12)),
+                        ]),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time, color: Colors.grey[600], size: 16),
+                        Text(' $time', style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
 }
@@ -136,13 +130,14 @@ class FavouritesScreen extends StatelessWidget with FavouritesUIMixin {
           ),
           itemBuilder: (_, i) {
             final item = favourites[i];
-            return favouriteItemCard(
-              imageUrl: images[i % images.length],
-              restaurant: item['restaurant'],
-              itemName: item['itemName'],
-              price: item['price'],
-              rating: item['rating'],
-              time: item['time'],
+            return FittedBox(
+              child: favouriteItemCard(
+                imageUrl: images[i % images.length],
+                restaurant: item['restaurant'],
+                itemName: item['itemName'],
+                rating: item['rating'],
+                time: item['time'],
+              ),
             );
           },
         ),

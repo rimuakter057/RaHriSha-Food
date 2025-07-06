@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rahrisha_food/features/home/screens/home_screen.dart';
-
+import 'package:rahrisha_food/features/user_profile/ui/screen/user_profile.dart';
 import '../../../recepie/screens/Edit_recipe.dart';
 import '../../../recepie/screens/recipe_details.dart';
 import '../../../recepie/screens/upload_recipe.dart';
@@ -20,11 +20,9 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
 
   final List<Widget> _screens = [
     const HomeScreen(),
-   const RecipeEditPage(),
-   const RecipeDetailPage (),
-    const UploadRecipe(),
-    const SearchScreen(),
+    Scaffold(),
     FavouritesScreen(),
+    UserProfile(),
   ];
 
   void _onItemTapped(int index) {
@@ -40,13 +38,11 @@ class _MainBottomNavScreenState extends State<MainBottomNavScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
-        destinations: const [
+        destinations:  [
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.category), label: 'edit'),
-          NavigationDestination(icon: Icon(Icons.shopping_cart), label: 'details'),
-          NavigationDestination(icon: Icon(Icons.favorite_border), label: 'upload'),
-          NavigationDestination(icon: Icon(Icons.shopping_cart), label: 'search'),
-          NavigationDestination(icon: Icon(Icons.favorite_border), label: 'favourite'),
+          NavigationDestination(icon: Icon(Icons.newspaper), label: 'Blog'),
+          NavigationDestination(icon: Icon(Icons.favorite), label: 'favourite'),
+          NavigationDestination(icon: Icon(Icons.person), label: 'Profile'),
 
 
         ],

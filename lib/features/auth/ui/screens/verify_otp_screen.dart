@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
+import 'package:rahrisha_food/features/common/ui/screens/main_bottom_nav_screen.dart';
 
 class VerifyOtpScreen extends StatefulWidget {
   const VerifyOtpScreen({super.key});
@@ -26,12 +28,12 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             SizedBox(height: 80.h),
             Text(
               'Verification Code',
-              style: textTheme.titleLarge,
+              style: textTheme.titleLarge!.copyWith(color: AppColors.white,fontSize: 25.sp),
             ),
             SizedBox(height: 8.h),
             Text(
               'We have sent a code to Your Email',
-              style: textTheme.titleSmall,
+              style: textTheme.titleSmall!.copyWith(color: AppColors.white,),
             ),
             SizedBox(height: 30.h),
             Container(
@@ -67,20 +69,24 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
               fieldHeight: 70.h,
               fieldWidth: 60.w,
               activeFillColor: AppColors.white,
+              selectedFillColor: AppColors.white,
+              inactiveFillColor: AppColors.white,
+              errorBorderColor: Colors.red,
+
             ),
             animationDuration: Duration(milliseconds: 300),
             backgroundColor: AppColors.white,
             enableActiveFill: true,
             controller: _verifyOtpTEController,
             appContext: context,
-            validator: (String? value){
-              if(value?.trim().isEmpty ?? true){
+            validator: (String? value) {
+              if (value?.trim().isEmpty ?? true) {
                 return 'Please Enter Your Otp';
               }
               return null;
             },
-
           ),
+
           SizedBox(height: 20.h),
           SizedBox(
             width: double.infinity,
@@ -88,10 +94,10 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
             child: ElevatedButton(
               onPressed: () {
                 if(_formKey.currentState!.validate()){
-
+                  Get.toNamed(MainBottomNavScreen.name);
                 }
               },
-              child: Text('Send Code', style: TextStyle(color: Colors.white)),
+              child: Text('Continue', style: TextStyle(color: Colors.white)),
             ),
           ),
         ],

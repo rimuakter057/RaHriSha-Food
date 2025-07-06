@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/features/auth/ui/screens/sign_up_screen.dart';
 import 'package:rahrisha_food/features/common/ui/screens/main_bottom_nav_screen.dart';
@@ -21,7 +22,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  String selectedRole = 'user';
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme =Theme.of(context).textTheme;
@@ -33,7 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(height: 80.h),
               Text(
                 AppText.login,
-                style: textTheme.titleLarge,
+                style: textTheme.titleLarge!.copyWith(color: AppColors.white,fontSize: 25.sp),
               ),
               SizedBox(height: 8.h),
               Text(
@@ -119,7 +120,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 },
                 child: Text(
                   AppText.forgotPassword,
-                  style: TextStyle(color: Colors.orange),
+                  style: TextStyle(color: Colors.pink),
                 ),
               ),
             ],
@@ -149,7 +150,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 child: Text(
                   AppText.signup,
                   style: TextStyle(
-                    color: Colors.orange,
+                    color: Colors.pink,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -193,3 +194,9 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 }
+
+
+
+
+
+

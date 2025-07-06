@@ -31,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             SizedBox(height: 80.h),
             Text(
               AppText.signup,
-              style: textTheme.titleLarge,
+              style: textTheme.titleLarge!.copyWith(color: AppColors.white,fontSize: 25.sp),
             ),
             SizedBox(height: 8.h),
             Text(
@@ -175,7 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Text(
                   AppText.login,
                   style: TextStyle(
-                    color: Colors.orange,
+                    color: Colors.pink,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

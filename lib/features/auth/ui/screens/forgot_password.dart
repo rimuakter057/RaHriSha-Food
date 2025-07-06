@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/features/auth/ui/screens/verify_otp_screen.dart';
 
+import '../../../../app/app_colors.dart';
+
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
   static const String name='forget_pass';
@@ -27,7 +29,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             SizedBox(height: 80.h),
             Text(
               AppText.forgotPassword,
-              style: textTheme.titleLarge,
+              style: textTheme.titleLarge!.copyWith(color: AppColors.white,fontSize: 25.sp),
             ),
             SizedBox(height: 8.h),
             Text(

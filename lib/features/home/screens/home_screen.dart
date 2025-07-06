@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         Row(
                           children: [
-                            Text("data",style: TextStyle(color: AppColors.white),),
+                            Text("location",style: TextStyle(color: AppColors.white),),
                             DropdownButton<String>(
                               items: [],
                               onChanged: (value) {},
@@ -105,14 +106,7 @@ class _HomeScreenState extends State<HomeScreen>
                         ),
                       ],
                     ),
-                    Text(
-                      "Provide best food",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
-                          color: AppColors.white
-                      ),
-                    ),
+
                   ],
                 ),
               ),
@@ -208,18 +202,17 @@ class _HomeScreenState extends State<HomeScreen>
                         unselectedLabelColor: Colors.white70,
                         indicatorColor: Colors.black,
                         labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
-// Remove the default divider
                         dividerColor: Colors.transparent,
-// Remove left padding/indentation
                         padding: EdgeInsets.zero,
                         indicatorPadding: EdgeInsets.zero,
                         tabAlignment: TabAlignment.start, // Force left alignment
                         tabs: [
-                          _buildTabItem('Home'),
-                          _buildTabItem('Explore'),
-                          _buildTabItem('Cart'),
-                          _buildTabItem('Wishlist'),
-                          _buildTabItem('Profile'),
+                          _buildTabItem('Burgers'),
+                          _buildTabItem('Pizza'),
+                          _buildTabItem('Rice'),
+                          _buildTabItem('Noodles'),
+                          _buildTabItem('Desserts'),
+                          _buildTabItem('Drinks'),
                         ],
                       ),
                     ),
@@ -234,6 +227,7 @@ class _HomeScreenState extends State<HomeScreen>
                           _buildTabContent("Pizza3"),
                           _buildTabContent('Pizza4'),
                           _buildTabContent('Pizza5'),
+                          _buildTabContent('Pizza6'),
                         ],
                       ),
                     ),
@@ -245,32 +239,11 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       ),
       // Floating Action Button
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 20.h),
-        child: Container(
-          width: 120.w,
-          height: 60.h,
-          decoration: BoxDecoration(
-            color: Colors.deepPurple,
-            borderRadius: BorderRadius.circular(15.r),
-          ),
-          child: Center(
-            child: GestureDetector(
-              onTap: (){
-                Get.toNamed(UploadRecipe.name);
-              },
-              child: Text(
-                'ADD',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.sp,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.primary,
+        onPressed: (){},
+            child: Icon(Icons.add,color: AppColors.white,size: 30.sp,),
+      )
     );
   }
   Widget _buildTabItem(String text) {
@@ -279,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen>
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.r),
-          color: Colors.blue,
+          color: AppColors.primary,
         ),
         child: Text(
           text,
@@ -320,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen>
                       child: Image.asset(
                         AssetsPath.homeTopImage,
                         width: double.infinity,
-                        height: 150, // height নির্ধারণ করো প্রয়োজনে
+                        height: 150,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -360,7 +333,16 @@ class _HomeScreenState extends State<HomeScreen>
                       SizedBox(height: 4.h),
                       Row(
                         children: [
-                          Icon(Icons.star, size: 16.sp, color: Colors.amber),
+                         RatingBarIndicator(
+                            rating: 4.5,
+                            itemBuilder: (context, index) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            itemCount: 3,
+                            itemSize: 15.sp,
+                            direction: Axis.horizontal,
+                          ),
                           Text(
                             "Review",
                             style: TextStyle(fontSize: 12.sp),
