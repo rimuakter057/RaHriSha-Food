@@ -9,7 +9,7 @@ import '../../../../app/app_colors.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
-  static const String name='forget_pass';
+  static const String name='/forget_pass';
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }

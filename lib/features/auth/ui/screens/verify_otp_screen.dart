@@ -11,7 +11,7 @@ class VerifyOtpScreen extends StatefulWidget {
 
   const VerifyOtpScreen({Key? key, required this.email, required this.otp}) : super(key: key);
 
-  static const String name = 'verify_otp';
+  static const String name = '/verify_otp';
 
   @override
   State<VerifyOtpScreen> createState() => _VerifyOtpScreenState();

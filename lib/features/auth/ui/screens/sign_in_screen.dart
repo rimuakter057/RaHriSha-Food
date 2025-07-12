@@ -16,7 +16,7 @@ import 'forgot_password.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
-static const String name='sign_in';
+static const String name='/sign-in';
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
@@ -139,7 +139,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   final password = _passwordTEController.text.trim();
                   Get.find<SignInController>().login(email, password);
                   showSuccessToast(context: context, icon: Icons.done, title: 'Sign in success',);
-                  //Get.to(MainBottomNavScreen());
+                  Get.to(MainBottomNavScreen());
                 }
               },
 

@@ -9,12 +9,12 @@ import 'package:rahrisha_food/features/edit_profile/ui/screen/edit_profile_scree
 import 'package:rahrisha_food/features/recepie/screens/Edit_recipe.dart';
 import 'package:rahrisha_food/features/recepie/screens/recipe_details.dart';
 import 'package:rahrisha_food/features/recepie/screens/upload_recipe.dart';
-import 'package:rahrisha_food/features/serch/screens/search_screen.dart';
 import 'package:rahrisha_food/features/user_profile/ui/screen/user_profile.dart';
 
 class AppRoutes {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    print("route requested: ${settings.name}");
+    print("Route requested: ${settings.name}");
+    print("Arguments received: ${settings.arguments}");
 
     if (settings.name == SplashScreen.name) {
       return MaterialPageRoute(builder: (_) => const SplashScreen());
@@ -27,10 +27,12 @@ class AppRoutes {
       if (args is Map<String, String>) {
         final email = args['email'] ?? '';
         final otp = args['otp'] ?? '';
+        print("VerifyOtpScreen args: email=$email, otp=$otp");
         return MaterialPageRoute(
           builder: (_) => VerifyOtpScreen(email: email, otp: otp),
         );
       }
+      print("VerifyOtpScreen called with missing or invalid args");
       return MaterialPageRoute(
         builder: (_) => VerifyOtpScreen(email: '', otp: ''),
       );
@@ -43,14 +45,30 @@ class AppRoutes {
     } else if (settings.name == RecipeEditPage.name) {
       return MaterialPageRoute(builder: (_) => RecipeEditPage());
     } else if (settings.name == RecipeDetailPage.name) {
-      return MaterialPageRoute(builder: (_) => RecipeDetailPage());
+      final args = settings.arguments;
+      print("Navigating to RecipeDetailPage with args: $args");
+
+      if (args is int) {
+        return MaterialPageRoute(
+          builder: (_) => RecipeDetailPage(recipeId: args),
+
+        );
+      } else {
+        print("RecipeDetailPage called with invalid or missing recipeId!");
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(
+              child: Text('Invalid recipe ID.'),
+            ),
+          ),
+        );
+      }
     } else if (settings.name == UserProfile.name) {
       return MaterialPageRoute(builder: (_) => UserProfile());
-    } else if (settings.name == SearchScreen.name) {
-      return MaterialPageRoute(builder: (_) => const SearchScreen());
     } else if (settings.name == EditProfileScreen.name) {
       return MaterialPageRoute(builder: (_) => const EditProfileScreen());
     } else {
+      print("Route not found: ${settings.name}");
       return MaterialPageRoute(
         builder: (_) => const Scaffold(
           body: Center(child: Text('404 - Page not found')),

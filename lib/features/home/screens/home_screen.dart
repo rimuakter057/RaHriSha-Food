@@ -3,30 +3,30 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
-import 'package:rahrisha_food/app/app_text.dart';
 import 'package:rahrisha_food/app/assets_path.dart';
-import 'package:rahrisha_food/features/home/screens/widget/carousel_slider.dart';
+import 'package:rahrisha_food/features/auth/controllers/user_service.dart';
+import 'package:rahrisha_food/features/contact/contact_screen.dart';
+import 'package:rahrisha_food/features/home/controllers/fetch_recipe_controller.dart';
+import 'package:rahrisha_food/features/home/widgets/home_carousel_slider.dart';
+import 'package:rahrisha_food/features/recepie/controller/recipe_detils_controller.dart';
 import 'package:rahrisha_food/features/recepie/screens/recipe_details.dart';
-import 'package:rahrisha_food/features/recepie/screens/upload_recipe.dart';
-import 'package:rahrisha_food/features/serch/screens/search_screen.dart';
+import 'package:rahrisha_food/features/wishlist/controller/favourite_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  static const String name='sign_in';
+  static const String name = 'home_screen';
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
-  final List<String> listItems = List.generate(20, (index) => 'List Item ${index + 1}');
-  late TabController _tabController;
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+  final HomeController homeController = Get.put(HomeController());
+  final UserService userService = Get.find<UserService>();
+  final FavouritesController favouritesController = Get.find<FavouritesController>();
+  final RecipeDetailController recipeDetailController = Get.find<RecipeDetailController>();
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 5, vsync: this);
-  }
+  late final TabController _tabController = TabController(length: 1, vsync: this);
 
   @override
   void dispose() {
@@ -34,333 +34,489 @@ class _HomeScreenState extends State<HomeScreen>
     super.dispose();
   }
 
+  Future<void> _refreshData() async {
+    await homeController.fetchRecipes(searchQuery: homeController.searchController.text);
+  }
+
+  late bool isSearch;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Top Fixed Container (Non-scrolling)
-            Container(
-              height: 150.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(AssetsPath.homeTopImage),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                child: Column(
+      backgroundColor: AppColors.lightBackground,
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        toolbarHeight: 70,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
+          ),
+        ),
+        title: GetBuilder<HomeController>(
+          id: 'homeAppBar',
+          builder: (controller) {
+            return Obx(() {
+              if (controller.isSearching.value) {
+                return TextField(
+                  controller: controller.searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Search recipes...',
+                    hintStyle: const TextStyle(color: Colors.white70),
+                    prefixIcon: const Icon(Icons.search, color: Colors.black38),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear, color: Colors.black38),
+                      onPressed: () {
+                        controller.searchController.clear();
+                        controller.onSearchTextChanged('');
+                      },
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(color: Colors.amber),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  ),
+                  style: const TextStyle(color: Colors.black38),
+                  onChanged: controller.onSearchTextChanged,
+                  autofocus: true,
+                );
+              } else {
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text("location",style: TextStyle(color: AppColors.white),),
-                            DropdownButton<String>(
-                              items: [],
-                              onChanged: (value) {},
-                              underline: Container(),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              style: IconButton.styleFrom(
-                                shape: const CircleBorder(),
-                              ),
-                              onPressed: () {
-                                Get.toNamed(SearchScreen.name);
-                              },
-                              icon: Icon(
-                                  Icons.search,
-                                  color: AppColors.white
-                              ),
-                            ),
-                            IconButton(
-                              style: IconButton.styleFrom(
-                                shape: const CircleBorder(),
-                              ),
-                              onPressed: () {},
-                              icon: Icon(
-                                  Icons.notifications,
-                                  color: AppColors.white
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    Text(
+                      'Hello,',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white.withOpacity(0.8),
+                      ),
                     ),
-                    Row(
-                      children: [
-                        Icon(Icons.location_on, size: 16.sp,color: AppColors.white),
-                        SizedBox(width: 4.w),
-                        Text(
-                          AppText.currentLocation,
-                          style: TextStyle(fontSize: 12.sp,color: AppColors.white),
-                        ),
-                      ],
+                    Text(
+                      userService.userName.value.isNotEmpty
+                          ? userService.userName.value
+                          : 'Guest',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
-
                   ],
-                ),
-              ),
+                );
+              }
+            });
+          },
+        ),
+
+        leading: Obx(() {
+          final imageUrl = userService.userProfileImageUrl.value;
+          return Container(
+            margin: EdgeInsets.only(left: 5),
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.amber)
             ),
-            SizedBox(height: 5,),
-            HomeCarouselSlider(),
-            // Scrollable Content Area
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            child: CircleAvatar(
+              radius: 40.r,
+              backgroundColor: Colors.white,
+              backgroundImage: imageUrl.isNotEmpty
+                  ? NetworkImage(imageUrl)
+                  : const AssetImage('assets/default_profile.png') as ImageProvider,
+            ),
+          );
+        }),
+        actions: [
+          IconButton(
+            icon: Badge(
+              child: const Icon(Icons.notifications, color: Colors.white),
+            ),
+            onPressed: () {},
+          ),
+          GetBuilder<HomeController>(
+            id: 'homeAppBar',
+            builder: (controller) {
+              return IconButton(
+                icon: Icon(
+                  controller.isSearching.value ? Icons.close : Icons.search,
+                  color: Colors.white,
+                ),
+                onPressed: controller.toggleSearch,
+              );
+            },
+          ),
+        ],
+      ),
+      floatingActionButton: const ContactFab(),
+      body: RefreshIndicator(
+        color: AppColors.primary,
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 16.h),
+              // Carousel with shadow
+              HomeCarouselSlider(),
+              SizedBox(height: 24.h),
+              // Featured Section
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Featured Items ListView
-                    Padding(
-                      padding: EdgeInsets.all(16.w),
+                    Text(
+                      'Featured Recipes',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.darkText,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {},
                       child: Text(
-                        'Featured Items',
+                        'See All',
                         style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 14.sp,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-
-
-                    SizedBox(
-                      height: 180.h,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: listItems.length,
-                        itemBuilder: (context, index) {
-                          return FittedBox(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                  ],
+                ),
+              ),
+              SizedBox(height: 8.h),
+              // Featured Recipes Horizontal List
+              SizedBox(
+                height: 200.h,
+                child: GetBuilder<HomeController>(
+                  id: 'featuredRecipes',
+                  builder: (controller) {
+                    if (controller.isLoadingFeatured.value) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (controller.hasErrorFeatured.value) {
+                      return Center(child: Text(controller.errorMessageFeatured.value));
+                    }
+                    if (controller.displayedFeaturedRecipes.isEmpty) {
+                      return const Center(child: Text('No featured recipes found.'));
+                    }
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: EdgeInsets.only(left: 16.w),
+                      itemCount: controller.displayedFeaturedRecipes.length,
+                      itemBuilder: (context, index) {
+                        final recipe = controller.displayedFeaturedRecipes[index];
+                        final isFav = favouritesController.isFavourite(recipe);
+                        return Container(
+                          width: 160.w,
+                          margin: EdgeInsets.only(right: 16.w),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 2,
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              final int? recipeId = recipe['id'] as int?;
+                              if (recipeId != null) {
+                                Get.toNamed(RecipeDetailPage.name, arguments: recipeId);
+                              }
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16.r),
+                              child: Stack(
                                 children: [
+                                  // Recipe Image
+                                  Image.network(
+                                    recipe['cover_photo_url'] ?? '',
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        Image.asset(
+                                          AssetsPath.homeTopImage,
+                                          fit: BoxFit.cover,
+                                          width: double.infinity,
+                                          height: double.infinity,
+                                        ),
+                                  ),
+                                  // Gradient Overlay
                                   Container(
-                                    width: 180.w,
-                                    height: 100.h,
-
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12.r),
-                                      image: DecorationImage(
-                                        image: AssetImage(AssetsPath.homeTopImage), // তোমার ইমেজ পাথ
-                                        fit: BoxFit.cover,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black.withOpacity(0.7),
+                                        ],
                                       ),
                                     ),
-
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "title",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.bold,
+                                  // Favorite Button
+                                  Positioned(
+                                    top: 8,
+                                    right: 8,
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          favouritesController.toggleFavourite(recipe),
+                                      child: Container(
+                                        padding: EdgeInsets.all(6.w),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.9),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          isFav ? Icons.favorite : Icons.favorite_border,
+                                          color: isFav ? Colors.red : AppColors.primary,
+                                          size: 20.sp,
                                         ),
                                       ),
-                                      SizedBox(height: 4.h),
-                                      Text(
-                                        "subtitle",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 12.sp,
-                                        ),
+                                    ),
+                                  ),
+                                  // Recipe Info
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(12.w),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            recipe['name'] ?? 'No Name',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.sp,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 4.h),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.people_outline,
+                                                color: Colors.white70,
+                                                size: 14.sp,
+                                              ),
+                                              SizedBox(width: 4.w),
+                                              Text(
+                                                '${recipe['servings'] ?? 'N/A'} Servings',
+                                                style: TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 10.sp,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 24.h),
+              // All Recipes Section
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                child: Text(
+                  'All Recipes',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.darkText,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.h),
+              _buildTabContent(),
+              SizedBox(height: 20.h),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-
-
-                    SizedBox(height: 24.h),
-
-                    // Tab Bar
-
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 8.h),
-                      child: TabBar(
-                        controller: _tabController,
-                        isScrollable: true,
-                        labelColor: Colors.white,
-                        unselectedLabelColor: Colors.white70,
-                        indicatorColor: Colors.black,
-                        labelPadding: EdgeInsets.symmetric(horizontal: 4.w),
-                        dividerColor: Colors.transparent,
-                        padding: EdgeInsets.zero,
-                        indicatorPadding: EdgeInsets.zero,
-                        tabAlignment: TabAlignment.start, // Force left alignment
-                        tabs: [
-                          _buildTabItem('Burgers'),
-                          _buildTabItem('Pizza'),
-                          _buildTabItem('Rice'),
-                          _buildTabItem('Noodles'),
-                          _buildTabItem('Desserts'),
-                          _buildTabItem('Drinks'),
+  Widget _buildTabContent() {
+    return GetBuilder<HomeController>(
+      id: 'allRecipes',
+      builder: (controller) {
+        if (controller.isLoadingAllRecipes.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (controller.hasErrorAllRecipes.value) {
+          return Center(child: Text(controller.errorMessageAllRecipes.value));
+        }
+        if (controller.displayedAllRecipes.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Text(
+                controller.searchController.text.isNotEmpty &&
+                    !controller.isLoadingAllRecipes.value
+                    ? 'No matching recipes found.'
+                    : 'No recipes available.',
+                style: TextStyle(fontSize: 16.sp),
+              ),
+            ),
+          );
+        }
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          itemCount: controller.displayedAllRecipes.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 16.w,
+            mainAxisSpacing: 16.h,
+            childAspectRatio: 0.75,
+          ),
+          itemBuilder: (context, index) {
+            final recipe = controller.displayedAllRecipes[index];
+            final isFav = favouritesController.isFavourite(recipe);
+            return GestureDetector(
+              onTap: () {
+                final int? recipeId = recipe['id'] as int?;
+                if (recipeId != null) {
+                  Get.toNamed(RecipeDetailPage.name, arguments: recipeId);
+                }
+              },
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.r),
+                ),
+                shadowColor: Colors.grey.withOpacity(0.2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Recipe Image
+                    ClipRRect(
+                      borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(16.r)),
+                      child: Stack(
+                        children: [
+                          Image.network(
+                            recipe['cover_photo_url'] ?? '',
+                            height: 120.h,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                                  AssetsPath.homeTopImage,
+                                  fit: BoxFit.cover,
+                                  height: 120.h,
+                                  width: double.infinity,
+                                ),
+                          ),
+                          // Favorite Button
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: GestureDetector(
+                              onTap: () =>
+                                  favouritesController.toggleFavourite(recipe),
+                              child: Container(
+                                padding: EdgeInsets.all(6.w),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.9),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  isFav ? Icons.favorite : Icons.favorite_border,
+                                  color: isFav ? Colors.red : AppColors.primary,
+                                  size: 20.sp,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    // TabBarView Content
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.5,
-                      child: TabBarView(
-                        controller: _tabController,
+                    // Recipe Details
+                    Padding(
+                      padding: EdgeInsets.all(12.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildTabContent("Pizza1"),
-                          _buildTabContent('Pizza2'),
-                          _buildTabContent("Pizza3"),
-                          _buildTabContent('Pizza4'),
-                          _buildTabContent('Pizza5'),
-                          _buildTabContent('Pizza6'),
+                          Text(
+                            recipe['name'] ?? '',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.darkText,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 8.h),
+                          RatingBarIndicator(
+                            rating:
+                            (recipe['average_rating'] as num?)?.toDouble() ?? 0.0,
+                            itemBuilder: (context, index) => const Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            itemCount: 5,
+                            itemSize: 14.sp,
+                            direction: Axis.horizontal,
+                          ),
+                          SizedBox(height: 8.h),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.reviews_outlined,
+                                size: 14.sp,
+                                color: AppColors.secondaryText,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                '${recipe['review_count'] ?? 0} Reviews',
+                                style: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: AppColors.secondaryText,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-      // Floating Action Button
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
-        onPressed: (){},
-            child: Icon(Icons.add,color: AppColors.white,size: 30.sp,),
-      )
-    );
-  }
-  Widget _buildTabItem(String text) {
-    return Tab(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.r),
-          color: AppColors.primary,
-        ),
-        child: Text(
-          text,
-          style: TextStyle(fontSize: 14.sp, color: AppColors.white),
-        ),
-      ),
-    );
-  }
-  Widget _buildTabContent(String text) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(16.w),
-      itemCount: 10,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12.w,
-        mainAxisSpacing: 12.h,
-        childAspectRatio: 0.8,
-      ),
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: (){
-            Get.toNamed(RecipeDetailPage.name);
+            );
           },
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Stack(
-                  children: [
-                    // Image
-                    ClipRRect(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(12.r)),
-                      child: Image.asset(
-                        AssetsPath.homeTopImage,
-                        width: double.infinity,
-                        height: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    // Favorite Icon Positioned on top left
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: Icon(Icons.favorite, color: Colors.white),
-                          onPressed: () {
-
-                          },
-                          iconSize: 24,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        text,
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                      SizedBox(height: 4.h),
-                      Row(
-                        children: [
-                         RatingBarIndicator(
-                            rating: 4.5,
-                            itemBuilder: (context, index) => Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                            itemCount: 3,
-                            itemSize: 15.sp,
-                            direction: Axis.horizontal,
-                          ),
-                          Text(
-                            "Review",
-                            style: TextStyle(fontSize: 12.sp),
-                          ),
-                          SizedBox(width: 4.w),
-                          Text(
-                            "(12)",
-                            style: TextStyle(fontSize: 8.sp),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
         );
       },
     );

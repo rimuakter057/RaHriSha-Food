@@ -4,54 +4,55 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/app/app_text.dart';
-import 'package:rahrisha_food/core/widgets/delete_popup.dart';
 import 'package:rahrisha_food/core/widgets/show_success_toast.dart';
 import 'package:rahrisha_food/features/auth/controllers/sign_up_controller.dart';
 import 'package:rahrisha_food/features/auth/ui/screens/sign_in_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
-  static const String name='sign_up';
+  static const String name = '/sign_up';
+
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _nameTEController = TextEditingController();
-  final TextEditingController _emailTEController = TextEditingController();
-  final TextEditingController _passwordTEController = TextEditingController();
-  final TextEditingController _confirmPasswordTEController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final SignUpController _authController = Get.put(SignUpController());
-
+  final _nameCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  final _confirmPassCtrl = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final _signUpController = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme =Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      backgroundColor: Color(0xFF0A0C2D),
+      backgroundColor: const Color(0xFF0A0C2D),
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: 80.h),
             Text(
               AppText.signup,
-              style: textTheme.titleLarge!.copyWith(color: AppColors.white,fontSize: 25.sp),
+              style: textTheme.titleLarge!.copyWith(
+                color: AppColors.white,
+                fontSize: 25.sp,
+              ),
             ),
             SizedBox(height: 8.h),
             Text(
               'Please sign up to get started',
-              style: textTheme.titleSmall,
+              style: textTheme.titleSmall!.copyWith(color: AppColors.white),
             ),
             SizedBox(height: 50.h),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 24.sp, vertical: 50.sp),
-              height: 695.h,
+              padding: EdgeInsets.all(24.sp),
               decoration: BoxDecoration(
                 color: AppColors.white,
-                borderRadius: BorderRadius.only(topRight: Radius.circular(24),topLeft: Radius.circular(24)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
               ),
-              child: _buildSignUpForm(),
+              child: _buildForm(),
             ),
           ],
         ),
@@ -59,153 +60,63 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget _buildSignUpForm() {
+  Widget _buildForm() {
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppText.name, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 8.h),
-          TextFormField(
-            controller: _nameTEController,
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              hintText: 'Name',
-              filled: true,
-              fillColor: Colors.grey[200],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            validator: (String? value) {
-              if (value?.trim().isEmpty ?? true) {
-                return 'Please Enter Your Name';
-              }
-              return null;
-            },
+          _buildTextField(
+            label: AppText.name,
+            hint: 'Name',
+            controller: _nameCtrl,
+            validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter your name' : null,
           ),
           SizedBox(height: 20.h),
-          Text(AppText.email, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 8.h),
-          TextFormField(
-            controller: _emailTEController,
-            keyboardType: TextInputType.emailAddress,
-            decoration: InputDecoration(
-              hintText: 'example@gmail.com',
-              filled: true,
-              fillColor: Colors.grey[200],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            validator: (String? value) {
-              String email = value ?? '';
-              if (!EmailValidator.validate(email)) {
-                return 'Please Enter Your Email';
-              }
-              return null;
-            },
+          _buildTextField(
+            label: AppText.email,
+            hint: 'example@gmail.com',
+            controller: _emailCtrl,
+            keyboard: TextInputType.emailAddress,
+            validator: (v) => EmailValidator.validate(v ?? '') ? null : 'Enter a valid email',
           ),
           SizedBox(height: 20.h),
-          Text(AppText.password, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 8.h),
-          TextFormField(
-            controller: _passwordTEController,
-            obscureText: true,
-            decoration: InputDecoration(
-              hintText: 'Password',
-              suffixIcon: Icon(Icons.remove_red_eye),
-              filled: true,
-              fillColor: Colors.grey[200],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            validator: (String? value) {
-              if ((value?.trim().isEmpty ?? true) || value!.length < 6) {
-                return 'Please Enter A Password More Than 6 Letters';
-              }
-              return null;
-            },
+          _buildTextField(
+            label: AppText.password,
+            hint: 'Password',
+            controller: _passCtrl,
+            obscure: true,
+            validator: (v) => (v == null || v.length < 6) ? 'Password must be at least 6 characters' : null,
           ),
           SizedBox(height: 20.h),
-          Text(AppText.confirmPassword, style: TextStyle(fontWeight: FontWeight.bold)),
-          SizedBox(height: 8),
-          TextFormField(
-            controller: _confirmPasswordTEController,
-            obscureText: true,
-            decoration: InputDecoration(
-              hintText: AppText.confirmPassword,
-              suffixIcon: Icon(Icons.remove_red_eye),
-              filled: true,
-              fillColor: Colors.grey[200],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            validator: (String? value) {
-              if ((value?.trim().isEmpty ?? true) || value!.length < 6) {
-                return 'Please Enter A Password More Than 6 Letters';
-              }
-              return null;
-            },
+          _buildTextField(
+            label: AppText.confirmPassword,
+            hint: AppText.confirmPassword,
+            controller: _confirmPassCtrl,
+            obscure: true,
+            validator: (v) => (v == null || v.length < 6) ? 'Password must be at least 6 characters' : null,
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 20.h),
           SizedBox(
             width: double.infinity,
             height: 50.h,
             child: ElevatedButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  final name = _nameTEController.text.trim();
-                  final email = _emailTEController.text.trim();
-                  final password = _passwordTEController.text.trim();
-                  final confirmPassword = _confirmPasswordTEController.text.trim();
-
-                  if (password != confirmPassword) {
-                    Get.snackbar('Error', 'Passwords do not match.');
-                    return;
-                  }
-
-                  // Call sign up
-                  final isSuccess = await _authController.signUp(name, email, password);
-
-                  if (isSuccess) {
-                    showSuccessToast(
-                      context: context,
-                      icon: Icons.done,
-                      title: 'Sign up success',
-                    );
-                    Get.to(() => SignInScreen());
-                  } else {
-                    Get.snackbar('Error', 'Sign up failed. Try again.');
-                  }
-                }
-              },
-
-              child: Text(AppText.signup, style: TextStyle(color: Colors.white)),
+              onPressed: _submit,
+              child: Text(
+                AppText.signup,
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
           ),
           SizedBox(height: 16.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Already Existing Account?"),
+              const Text("Already have an account? "),
               GestureDetector(
-                onTap: () {
-                  Get.toNamed(SignInScreen.name);
-                },
-                child: Text(
+                onTap: () => Get.toNamed(SignInScreen.name),
+                child: const Text(
                   AppText.login,
-                  style: TextStyle(
-                    color: Colors.pink,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -213,5 +124,72 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    bool obscure = false,
+    TextInputType keyboard = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        SizedBox(height: 8.h),
+        TextFormField(
+          controller: controller,
+          obscureText: obscure,
+          keyboardType: keyboard,
+          decoration: InputDecoration(
+            hintText: hint,
+            suffixIcon: obscure ? const Icon(Icons.remove_red_eye) : null,
+            filled: true,
+            fillColor: Colors.grey[200],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+          ),
+          validator: validator,
+        ),
+      ],
+    );
+  }
+
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    final name = _nameCtrl.text.trim();
+    final email = _emailCtrl.text.trim();
+    final pass = _passCtrl.text.trim();
+    final confirmPass = _confirmPassCtrl.text.trim();
+
+    if (pass != confirmPass) {
+      Get.snackbar(
+        'Error',
+        'Passwords do not match',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
+      return;
+    }
+
+    final success = await _signUpController.signUp(name, email, pass);
+    if (success) {
+      showSuccessToast(context: context, icon: Icons.done, title: 'Sign up successful!');
+      Get.offAllNamed(SignInScreen.name);
+    } else {
+      Get.snackbar(
+        'Error',
+        'Sign up failed',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
+    }
   }
 }
