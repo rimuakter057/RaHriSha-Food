@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:rahrisha_food/features/blog/screen/blog_screen.dart';
-import 'package:rahrisha_food/features/recepie/screens/Edit_recipe.dart';
-import 'package:rahrisha_food/features/recepie/screens/recipe_details.dart';
-import 'package:rahrisha_food/features/recepie/screens/upload_recipe.dart';
-import 'package:rahrisha_food/features/serch/screens/search_screen.dart';
-import 'package:rahrisha_food/features/wishlist/screen/wishlist_screen.dart';
-
+import 'package:rahrisha_food/app/app_colors.dart';
+import 'package:rahrisha_food/app/controller_binder.dart';
+import 'package:rahrisha_food/features/auth/ui/screens/splash_screen.dart';
+import '../features/auth/ui/screens/sign_in_screen.dart';
+import '../features/common/ui/screens/main_bottom_nav_screen.dart';
+import 'app_routes.dart';
 import '../features/common/ui/screens/main_bottom_nav_screen.dart';
 
 class RaHriShaFood extends StatefulWidget {
@@ -26,10 +25,10 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
       splitScreenMode: true,
 
       builder: (context, child) {
+
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'RaHriSha Food',
-
           theme: ThemeData(
             //this is theme data
             inputDecorationTheme: InputDecorationTheme(
@@ -42,14 +41,19 @@ class _RaHriShaFoodState extends State<RaHriShaFood> {
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(double.infinity, 50),
                 foregroundColor: Colors.white,
-                backgroundColor: Colors.deepOrange,
+                backgroundColor: AppColors.primary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
             ),
           ),
-          home: MainBottomNavScreen(),
+          initialRoute: SplashScreen.name,
+          onGenerateRoute: AppRoutes.onGenerateRoute,
+initialBinding: ControllerBinder(),
+
+
+
         );
       },
     );

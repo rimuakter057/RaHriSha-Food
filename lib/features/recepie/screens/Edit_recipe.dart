@@ -4,7 +4,7 @@ import 'package:rahrisha_food/core/widgets/delete_popup.dart';
 
 class RecipeEditPage extends StatelessWidget {
   const RecipeEditPage({super.key});
-
+  static const String name='edit';
   Widget labeledField(String label, String hint, {int maxLines = 1}) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 8),
     child: Column(
@@ -166,6 +166,7 @@ class RecipeEditPage extends StatelessWidget {
                 onPressed: () {
                   showConfirmDeleteDialog(
                     context: context,
+                    icon:Icons.warning_amber_rounded,
                     title: 'Delete Recipe?',
                     message:
                     'Are you sure you want to permanently delete this recipe? This action cannot be undone.',
