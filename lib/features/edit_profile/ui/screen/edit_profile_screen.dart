@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:rahrisha_food/app/app_text.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rahrisha_food/features/common/widgets/dialog.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -153,12 +155,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() => _isLoading = false);
 
     if (success) {
+
       Navigator.pop(context, {
         'name': _nameTEController.text.trim(),
         'email': widget.initialEmail,
         'phone': _numberTEController.text.trim(),
         'bio': _bioTEController.text.trim(),
         'profile_image_url': imageUrl,
+      });
+      showSuccessDialog(title: 'Profile Updated', message: ' you successfully update your Profile',onConfirm: (){
+        Get.back();
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

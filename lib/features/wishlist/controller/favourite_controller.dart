@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:rahrisha_food/features/auth/controllers/user_service.dart';
+import 'package:rahrisha_food/features/common/widgets/dialog.dart';
 
 class FavouritesController extends GetxController {
   final RxList<Map<String, dynamic>> _favouriteItems = <Map<String, dynamic>>[].obs;
@@ -24,10 +25,16 @@ class FavouritesController extends GetxController {
 
     if (isAlreadyFavourite) {
       _favouriteItems.removeWhere((favItem) => favItem['id'] == item['id']);
-      Get.snackbar('Removed', '${item['name']} removed from favourites.');
+      showSuccessDialog(title: 'Removed', message: ' you successfully remove item from favourite',onConfirm: (){
+        Get.back();
+      });
+      update();
     } else {
       _favouriteItems.add(item);
-      Get.snackbar('Added', '${item['name']} added to favourites!');
+      showSuccessDialog(title: 'Added', message: ' you successfully add item in your favourite',onConfirm: (){
+        Get.back();
+      });
+      update();
     }
 
     _saveFavourites();
@@ -50,7 +57,9 @@ class FavouritesController extends GetxController {
 
   void removeFavourite(Map<String, dynamic> item) {
     _favouriteItems.removeWhere((favItem) => favItem['id'] == item['id']);
-    Get.snackbar('Removed', '${item['name']} removed from favourites.');
+    showSuccessDialog(title: 'Removed', message: ' you successfully remove item from favourite',onConfirm: (){
+      Get.back();
+    });update();
     _saveFavourites();
   }
 

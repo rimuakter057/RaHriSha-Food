@@ -9,6 +9,7 @@ class MainBottomNavScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MainBottomNavController>(
+      init: MainBottomNavController(), // Initialize controller once
       builder: (controller) => Scaffold(
         body: controller.screens[controller.selectedIndex],
         bottomNavigationBar: Container(
@@ -45,15 +46,12 @@ class MainBottomNavScreen extends StatelessWidget {
                 height: 60,
                 elevation: 5,
                 selectedIndex: controller.selectedIndex,
-                onDestinationSelected: (index) {
-                  controller.changePage(index);
-                  controller.update(); // ✅ triggers GetBuilder to rebuild
-                },
+                onDestinationSelected: controller.changePage,
                 destinations: [
                   _navItem(controller.selectedIndex == 0, Icons.home_outlined, Icons.home),
                   _navItem(controller.selectedIndex == 1, Icons.article_outlined, Icons.article),
-                  NavigationDestination(
-                    icon: Center(child: const Icon(Icons.add, color: Colors.green, size: 60)),
+                  const NavigationDestination(
+                    icon: Center(child: Icon(Icons.add, color: Colors.green, size: 60)),
                     label: '',
                   ),
                   _navItem(controller.selectedIndex == 3, Icons.favorite_border, Icons.favorite),

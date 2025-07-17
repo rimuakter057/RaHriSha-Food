@@ -16,12 +16,12 @@ class RecipeDetailController extends GetxController {
   Future<void> fetchRecipeDetails(int id) async {
     isLoading.value = true;
     hasError.value = false;
-    recipeId = id; // ✅ Save it here
+    recipeId = id;
 
     try {
       final response = await supabase
           .from('recipes')
-          .select()
+          .select('*, ingredients(*), instructions(*)')
           .eq('id', id)
           .maybeSingle();
 
@@ -40,6 +40,7 @@ class RecipeDetailController extends GetxController {
   }
 
 
+
   Future<void> deleteRecipe() async {
     final id = recipeId;
     if (id == null) {
@@ -50,7 +51,6 @@ class RecipeDetailController extends GetxController {
     try {
       await supabase.from('recipes').delete().eq('id', id);
 
-      // ✅ Remove from HomeController and FavoriteController too
       final homeController = Get.find<HomeController>();
       final favoriteController = Get.find<FavouritesController>();
 
@@ -58,7 +58,7 @@ class RecipeDetailController extends GetxController {
       favoriteController.removeRecipeById(id);
 
       Get.back();
-      update();// Go back after deleting
+      update();
       Get.snackbar('Deleted', 'Recipe deleted.', snackPosition: SnackPosition.TOP);
     } catch (e) {
       Get.snackbar('Error', e.toString(), snackPosition: SnackPosition.TOP);

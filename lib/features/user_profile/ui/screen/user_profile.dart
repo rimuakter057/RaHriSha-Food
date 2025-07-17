@@ -3,10 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rahrisha_food/app/app_colors.dart';
+import 'package:rahrisha_food/features/auth/controllers/sign_in_controller.dart';
 import 'package:rahrisha_food/features/auth/ui/screens/sign_in_screen.dart';
+import 'package:rahrisha_food/features/blog/screen/user_blog_screen.dart';
 import 'package:rahrisha_food/features/edit_profile/ui/screen/edit_profile_screen.dart';
+import 'package:rahrisha_food/features/recepie/screens/user_recipe_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:get/get.dart'; // <-- Add if using GetX for routing!
+import 'package:get/get.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -17,10 +20,7 @@ class UserProfile extends StatefulWidget {
 }
 
 class _UserProfileState extends State<UserProfile> {
-  String _name = '';
-  String _email = '';
-  String _phone = '';
-  String _bio = 'I love fast food';
+  String _name = '', _email = '', _phone = '', _bio = 'I love fast food';
   String? _profileImageUrl;
 
   @override
@@ -33,22 +33,19 @@ class _UserProfileState extends State<UserProfile> {
     final user = Supabase.instance.client.auth.currentUser;
     if (user != null) {
       try {
-        final response = await Supabase.instance.client
+        final res = await Supabase.instance.client
             .from('users')
             .select('name, phone, bio, profile_image_url')
             .eq('id', user.id)
-            .single()
-            .limit(1);
-
+            .single();
         setState(() {
-          _name = response['name'] ?? 'No Name';
+          _name = res['name'] ?? 'No Name';
           _email = user.email ?? 'No Email';
-          _phone = response['phone'] ?? 'No Phone';
-          _bio = response['bio'] ?? 'I love fast food';
-          _profileImageUrl = response['profile_image_url'];
+          _phone = res['phone'] ?? 'No Phone';
+          _bio = res['bio'] ?? 'I love fast food';
+          _profileImageUrl = res['profile_image_url'];
         });
       } catch (e) {
-        debugPrint('Error fetching user data: $e');
         setState(() {
           _name = user.userMetadata?['name'] ?? 'No Name';
           _email = user.email ?? 'No Email';
@@ -61,196 +58,183 @@ class _UserProfileState extends State<UserProfile> {
   }
 
   Future<void> _logout() async {
-    await Supabase.instance.client.auth.signOut();
-    // Replace with your actual route to your SignIn page
-    Get.offAll(SignInScreen()); // or Navigator.pushReplacementNamed(context, '/signIn')
+    Get.find<SignInController>().logout();
+    Get.offAll(const SignInScreen());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          'Personal Info',
-          style: GoogleFonts.poppins(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final updated = await Navigator.push<Map<String, dynamic>>(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => EditProfileScreen(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 150.h,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text('Personal Info', style: GoogleFonts.poppins(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.w600)),
+              centerTitle: true,
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primaryColor.withOpacity(0.8),
+                      AppColors.primaryColor.withOpacity(0.4)
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.edit, color: Colors.white, size: 22.sp),
+                onPressed: () async {
+                  final updated = await Get.to(() => EditProfileScreen(
                     initialName: _name,
                     initialEmail: _email,
                     initialPhone: _phone,
                     initialBio: _bio,
                     initialProfileImageUrl: _profileImageUrl,
-                  ),
-                ),
-              );
-
-              if (updated != null) {
-                setState(() {
-                  _name = updated['name'] ?? _name;
-                  _email = updated['email'] ?? _email;
-                  _phone = updated['phone'] ?? _phone;
-                  _bio = updated['bio'] ?? _bio;
-                  _profileImageUrl = updated['profile_image_url'] ?? _profileImageUrl;
-                });
-              }
-            },
-            child: Text(
-              'Edit',
-              style: GoogleFonts.poppins(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w500,
-                color: Colors.orange,
-              ),
-            ),
-          )
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40.h, horizontal: 20.w),
-        child: Column(
-          children: [
-            _buildProfileImage(_name),
-            SizedBox(height: 30.h),
-            _buildContainer(),
-            SizedBox(height: 30.h),
-
-            // ✅ Logout Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: _logout,
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text('Logout'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.redAccent,
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  textStyle: GoogleFonts.poppins(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Center _buildProfileImage(String name) {
-    return Center(
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage: _profileImageUrl != null && _profileImageUrl!.isNotEmpty
-                ? NetworkImage(_profileImageUrl!)
-                : const AssetImage('assets/images/sharif.jpg') as ImageProvider,
-            radius: 60.r,
-          ),
-          SizedBox(width: 20.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: GoogleFonts.poppins(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 10.h),
-              Text(
-                _bio,
-                style: GoogleFonts.poppins(
-                  fontSize: 13.sp,
-                  color: Colors.grey,
-                ),
+                  ));
+                  if (updated != null) {
+                    setState(() {
+                      _name = updated['name'] ?? _name;
+                      _email = updated['email'] ?? _email;
+                      _phone = updated['phone'] ?? _phone;
+                      _bio = updated['bio'] ?? _bio;
+                      _profileImageUrl = updated['profile_image_url'] ?? _profileImageUrl;
+                    });
+                  }
+                },
               ),
             ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildContainer() {
-    return Container(
-      padding: EdgeInsets.all(20.r),
-      decoration: BoxDecoration(
-        color: const Color(0xffF6F8FA),
-        borderRadius: BorderRadius.circular(15.r),
-      ),
-      child: Column(
-        children: [
-          _infoRow(
-            icon: FontAwesomeIcons.user,
-            title: 'Full Name',
-            value: _name,
-            iconColor: AppColors.secondary,
           ),
-          SizedBox(height: 20.h),
-          _infoRow(
-            icon: Icons.email_outlined,
-            title: 'Email',
-            value: _email,
-            iconColor: const Color(0xffA09EFD),
-          ),
-          SizedBox(height: 20.h),
-          _infoRow(
-            icon: FontAwesomeIcons.phone,
-            title: 'Phone Number',
-            value: _phone,
-            iconColor: const Color(0xff4FA7FF),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 24.h),
+              child: Column(
+                children: [
+                  _profileHeader(),
+                  SizedBox(height: 32.h),
+                  _infoCard(),
+                  SizedBox(height: 32.h),
+                  _quickActions(),
+                  SizedBox(height: 24.h),
+                  _logoutButton(),
+                ],
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Row _infoRow({
-    required IconData icon,
-    required String title,
-    required String value,
-    required Color iconColor,
-  }) {
-    return Row(
-      children: [
-        CircleAvatar(
-          backgroundColor: Colors.white,
-          child: Icon(icon, color: iconColor),
-        ),
-        SizedBox(width: 15.w),
-        Column(
+  Widget _profileHeader() => Row(
+    children: [
+      CircleAvatar(
+        radius: 50.r,
+        backgroundColor: AppColors.primaryColor.withOpacity(0.1),
+        backgroundImage: _profileImageUrl?.isNotEmpty == true
+            ? NetworkImage(_profileImageUrl!)
+            : const AssetImage('assets/images/6024359.jpg') as ImageProvider,
+      ),
+      SizedBox(width: 20.w),
+      Expanded(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 12.sp,
-                color: Colors.grey[800],
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              value,
-              style: GoogleFonts.poppins(
-                fontSize: 14.sp,
-                color: Colors.grey[500],
-              ),
-            ),
+            Text(_name, style: GoogleFonts.poppins(fontSize: 20.sp, fontWeight: FontWeight.w600, color: Colors.grey[800])),
+            SizedBox(height: 8.h),
+            Text(_bio, maxLines: 2, overflow: TextOverflow.ellipsis, style: GoogleFonts.poppins(fontSize: 14.sp, color: Colors.grey[600], fontStyle: FontStyle.italic)),
           ],
         ),
+      ),
+    ],
+  );
+
+  Widget _infoCard() => Container(
+    padding: EdgeInsets.all(24.r),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(16.r),
+      boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 20, spreadRadius: 5, offset: const Offset(0, 10))],
+    ),
+    child: Column(
+      children: [
+        _infoItem(FontAwesomeIcons.user, 'Full Name', _name, AppColors.secondary),
+        Divider(height: 32.h, color: Colors.grey[200]),
+        _infoItem(Icons.email_outlined, 'Email', _email, const Color(0xffA09EFD)),
+        Divider(height: 32.h, color: Colors.grey[200]),
+        _infoItem(FontAwesomeIcons.phone, 'Phone Number', _phone, const Color(0xff4FA7FF)),
       ],
-    );
-  }
+    ),
+  );
+
+  Widget _infoItem(IconData icon, String title, String value, Color color) => Row(
+    children: [
+      CircleAvatar(
+        radius: 22.r,
+        backgroundColor: color.withOpacity(0.1),
+        child: Icon(icon, color: color, size: 20.sp),
+      ),
+      SizedBox(width: 16.w),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: GoogleFonts.poppins(fontSize: 12.sp, color: Colors.grey[500], fontWeight: FontWeight.w500)),
+            SizedBox(height: 4.h),
+            Text(value, style: GoogleFonts.poppins(fontSize: 16.sp, color: Colors.grey[800], fontWeight: FontWeight.w600)),
+          ],
+        ),
+      ),
+    ],
+  );
+
+  Widget _quickActions() => Row(
+    children: [
+      Expanded(child: _actionBtn(Icons.article, 'My Blogs', () => Get.to(() => const UserBlogsScreen()))),
+      SizedBox(width: 16.w),
+      Expanded(child: _actionBtn(Icons.restaurant_menu, 'My Recipes', () => Get.to(() => const UserRecipesScreen()))),
+    ],
+  );
+
+  Widget _actionBtn(IconData icon, String label, VoidCallback onTap) => ElevatedButton(
+    onPressed: onTap,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.white,
+      foregroundColor: AppColors.primaryColor,
+      side: BorderSide(color: Colors.grey[200]!),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      padding: EdgeInsets.symmetric(vertical: 16.h),
+      elevation: 0,
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 20.sp),
+        SizedBox(width: 8.w),
+        Text(label, style: GoogleFonts.poppins(fontSize: 14.sp, fontWeight: FontWeight.w600)),
+      ],
+    ),
+  );
+
+  Widget _logoutButton() => SizedBox(
+    width: double.infinity,
+    child: ElevatedButton.icon(
+      onPressed: _logout,
+      icon: Icon(Icons.logout, size: 20.sp),
+      label: Text('Logout', style: GoogleFonts.poppins(fontSize: 16.sp, fontWeight: FontWeight.w600)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.redAccent.withOpacity(0.9),
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(vertical: 16.h),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        elevation: 2,
+      ),
+    ),
+  );
 }

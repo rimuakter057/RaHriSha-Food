@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Still need Get for navigation and Get.put/find
 import 'package:rahrisha_food/features/blog/controller/blogcontroller.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'add_blog_screen.dart';
-import 'blog_detail_screen.dart';
-
-// lib/features/blog/view/blog_screen.dart
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:rahrisha_food/features/blog/controller/blogcontroller.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // Keep this import if you still need it here, but generally, Supabase client should be handled by the controller.
-import 'add_blog_screen.dart'; // Assuming you still have a separate AddBlogScreen, though we planned to rename it to AddEditBlogScreen.
 import 'blog_detail_screen.dart';
 
 mixin BlogCardBuilder {
@@ -21,7 +12,7 @@ mixin BlogCardBuilder {
     required String author,
     required String timeAgo,
     required int blogId, // NEW: Pass the blog ID for deletion
-    required VoidCallback onDelete, // NEW: Add an onDelete callback
+    required VoidCallback? onDelete, // NEW: Add an onDelete callback
   }) =>
       Container(
         margin: const EdgeInsets.only(bottom: 24),
@@ -68,10 +59,6 @@ mixin BlogCardBuilder {
                     overflow: TextOverflow.ellipsis, // Add ellipsis
                   ),
                 ),
-                IconButton(
-                  onPressed: onDelete, // Call the passed onDelete callback
-                  icon: const Icon(Icons.delete, color: Colors.red), // Changed to delete icon
-                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -104,8 +91,6 @@ mixin BlogCardBuilder {
       );
 }
 
-// lib/features/blog/view/blog_screen.dart
-// (Continue from the mixin above)
 
 class BlogScreen extends StatefulWidget { // Change to StatefulWidget
   const BlogScreen({super.key});
@@ -117,7 +102,6 @@ class BlogScreen extends StatefulWidget { // Change to StatefulWidget
 }
 
 class _BlogScreenState extends State<BlogScreen> with BlogCardBuilder {
-  // Initialize the controller here, it's safer within StatefulWidget
   final BlogController blogController = Get.put(BlogController());
 
   @override
@@ -129,30 +113,12 @@ class _BlogScreenState extends State<BlogScreen> with BlogCardBuilder {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // This is a good place to refetch data when the screen comes back into view
-    // (e.g., after adding, editing, or deleting a blog from another screen).
-    // Ensure the controller is available before calling fetchBlogs.
+
     if (Get.isRegistered<BlogController>()) {
       blogController.fetchBlogs(searchQuery: blogController.searchController.text);
     }
   }
 
-  // Helper method to show confirmation dialog and trigger deletion
-  void _confirmDelete(int blogId, String title) {
-    Get.defaultDialog(
-      title: 'Confirm Deletion',
-      middleText: 'Are you sure you want to delete "$title"? This action cannot be undone.',
-      textConfirm: 'Delete',
-      textCancel: 'Cancel',
-      confirmTextColor: Colors.white,
-      buttonColor: Colors.red,
-      cancelTextColor: Colors.black87,
-      onConfirm: () {
-        Get.back(); // Close the dialog
-        blogController.deleteBlog(blogId); // Call the controller's delete method
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -305,8 +271,7 @@ class _BlogScreenState extends State<BlogScreen> with BlogCardBuilder {
                       content: blog['content'] ?? 'No Content',
                       author: blog['author'] ?? 'Unknown Author',
                       timeAgo: blog['time_ago'] ?? 'Just now',
-                      blogId: blog['id'], // Pass the blog ID
-                      onDelete: () => _confirmDelete(blog['id'] as int, blog['title'] ?? 'this blog'), // Pass the delete callback
+                      blogId: blog['id'], onDelete: () {  }, // Pass the blog ID
                     ),
                   );
                 },

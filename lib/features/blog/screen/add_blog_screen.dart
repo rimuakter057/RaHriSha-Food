@@ -34,7 +34,7 @@ class AddBlogScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Image Picker Section
+              /// ✅ Image Picker
               GestureDetector(
                 onTap: () => controller.pickImage(),
                 child: controller.imageFile != null
@@ -72,7 +72,7 @@ class AddBlogScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24.0),
 
-              // Title Input
+              /// ✅ Title Input
               TextField(
                 controller: controller.titleController,
                 decoration: InputDecoration(
@@ -84,7 +84,7 @@ class AddBlogScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
 
-              // Content Input
+              /// ✅ Content Input
               TextField(
                 controller: controller.contentController,
                 decoration: InputDecoration(
@@ -97,21 +97,9 @@ class AddBlogScreen extends StatelessWidget {
                 minLines: 5,
                 keyboardType: TextInputType.multiline,
               ),
-              const SizedBox(height: 16.0),
-
-              // Author Input
-              TextField(
-                controller: controller.authorController,
-                decoration: InputDecoration(
-                  labelText: 'Author Name',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                  prefixIcon: const Icon(Icons.person),
-                ),
-                maxLines: 1,
-              ),
               const SizedBox(height: 32.0),
 
-              // Submit Button
+              /// ✅ Publish Button
               ElevatedButton(
                 onPressed: controller.isLoading
                     ? null
@@ -124,7 +112,11 @@ class AddBlogScreen extends StatelessWidget {
                   ),
                 ),
                 child: controller.isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
+                    ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
+                )
                     : Text(
                   'Publish Blog Post',
                   style: TextStyle(fontSize: 18, color: AppColors.white),
@@ -132,7 +124,7 @@ class AddBlogScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
 
-              // Error Message
+              /// ✅ Error Message
               if (controller.errorMessage.isNotEmpty)
                 Text(
                   controller.errorMessage,

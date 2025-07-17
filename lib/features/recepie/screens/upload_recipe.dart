@@ -3,10 +3,32 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rahrisha_food/features/recepie/controller/upload_recipe_controller.dart';
 
-class UploadRecipe extends StatelessWidget {
+class UploadRecipe extends StatefulWidget { // Changed to StatefulWidget to use initState for loading
   const UploadRecipe({super.key});
   static const String name = 'upload';
 
+  @override
+  State<UploadRecipe> createState() => _UploadRecipeState();
+}
+
+class _UploadRecipeState extends State<UploadRecipe> {
+  late final UploadRecipeController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.put(UploadRecipeController());
+
+    // Check if arguments are present and load data if in edit mode
+    final args = Get.arguments;
+    if (args != null && args is Map<String, dynamic>) {
+      controller.loadRecipeData(args);
+    } else {
+      controller.clearForm(); // ✅ Always fresh for new recipes
+    }
+  }
+
+  // Keep the labeled field helper method
   Widget _labeledField(
       String label,
       String hint,
@@ -33,7 +55,7 @@ class UploadRecipe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UploadRecipeController controller = Get.put(UploadRecipeController());
+    // Controller is already initialized in initState
 
     final categories = [
       {'title': 'Drink', 'icon': Icons.local_drink},
@@ -41,41 +63,20 @@ class UploadRecipe extends StatelessWidget {
       {'title': 'Fast Food', 'icon': Icons.fastfood_outlined},
     ];
 
+    final difficulties = ['Easy', 'Medium', 'Hard'];
+
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-        ),
-        title: const Text(
-          'Create Recipe',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        title: Text(
+          controller.editingRecipeId != null ? 'Edit Recipe' : 'Create Recipe', // Dynamic title
+          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.delete, color: Colors.red),
-            onPressed: () {
-              Get.defaultDialog(
-                title: 'Confirm',
-                middleText: 'Are you sure you want to delete this recipe?',
-                textConfirm: 'Yes',
-                textCancel: 'Cancel',
-                confirmTextColor: Colors.white,
-                onConfirm: () {
-                  Get.back();
-                  controller.deleteRecipe();
-                },
-              );
-            },
-          )
-
-        ],
       ),
       body: GetBuilder<UploadRecipeController>(
-        builder: (controller) {
+        builder: (_) {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -101,25 +102,38 @@ class UploadRecipe extends StatelessWidget {
                           width: double.infinity,
                         ),
                       )
-                          : controller.coverPhotoUrl != null
+                          : controller.coverPhotoUrl != null && controller.coverPhotoUrl!.isNotEmpty // Check for non-empty URL
                           ? ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: Image.network(
                           controller.coverPhotoUrl!,
                           fit: BoxFit.cover,
                           width: double.infinity,
+                          errorBuilder: (context, error, stackTrace) =>
+                          const Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
+                                SizedBox(height: 8),
+                                Text("Image Load Error", style: TextStyle(color: Colors.grey)),
+                              ],
+                            ),
+                          ),
                         ),
                       )
                           : const Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.camera_alt, size: 40, color: Colors.grey),
+                            Icon(Icons.camera_alt,
+                                size: 40, color: Colors.grey),
                             SizedBox(height: 8),
                             Text("Add Cover Photo",
                                 style: TextStyle(color: Colors.grey)),
                             Text("Required",
-                                style: TextStyle(color: Colors.red, fontSize: 12)),
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 12)),
                           ],
                         ),
                       ),
@@ -136,7 +150,8 @@ class UploadRecipe extends StatelessWidget {
                 const Text("Category"),
                 Row(
                   children: List.generate(categories.length, (index) {
-                    final isSelected = controller.selectedCategoryIndex == index;
+                    final isSelected =
+                        controller.selectedCategoryIndex == index;
                     final item = categories[index];
                     return Expanded(
                       child: InkWell(
@@ -149,19 +164,27 @@ class UploadRecipe extends StatelessWidget {
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             border: Border.all(
-                                color: isSelected ? Colors.deepOrange : Colors.grey),
+                                color: isSelected
+                                    ? Colors.deepOrange
+                                    : Colors.grey),
                             borderRadius: BorderRadius.circular(20),
-                            color: isSelected ? Colors.deepOrange : Colors.transparent,
+                            color: isSelected
+                                ? Colors.deepOrange
+                                : Colors.transparent,
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(item['icon'] as IconData,
-                                  color: isSelected ? Colors.white : Colors.black),
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.black),
                               const SizedBox(width: 4),
                               Text(item['title'] as String,
                                   style: TextStyle(
-                                      color: isSelected ? Colors.white : Colors.black)),
+                                      color: isSelected
+                                          ? Colors.white
+                                          : Colors.black)),
                             ],
                           ),
                         ),
@@ -174,7 +197,8 @@ class UploadRecipe extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Ingredients', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('Ingredients',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     TextButton.icon(
                       onPressed: controller.addIngredient,
                       icon: const Icon(Icons.add, color: Colors.deepOrange),
@@ -190,25 +214,32 @@ class UploadRecipe extends StatelessWidget {
                     return Row(
                       children: [
                         Expanded(
+                          flex: 2, // Give amount and unit more space
                           child: TextField(
                               controller: ingredient['amount'],
-                              decoration: const InputDecoration(hintText: "Amount")),
+                              decoration:
+                              const InputDecoration(hintText: "Amount")),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
+                          flex: 2,
                           child: TextField(
                               controller: ingredient['unit'],
-                              decoration: const InputDecoration(hintText: "Unit")),
+                              decoration:
+                              const InputDecoration(hintText: "Unit")),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
+                          flex: 4, // Give item more space
                           child: TextField(
                               controller: ingredient['item'],
-                              decoration: const InputDecoration(hintText: "Item")),
+                              decoration:
+                              const InputDecoration(hintText: "Item")),
                         ),
                         IconButton(
                           onPressed: () => controller.removeIngredient(index),
-                          icon: const Icon(Icons.remove_circle, color: Colors.red),
+                          icon: const Icon(Icons.remove_circle,
+                              color: Colors.red),
                         ),
                       ],
                     );
@@ -219,7 +250,8 @@ class UploadRecipe extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Instructions', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('Instructions',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     TextButton.icon(
                       onPressed: controller.addInstruction,
                       icon: const Icon(Icons.add, color: Colors.deepOrange),
@@ -237,20 +269,43 @@ class UploadRecipe extends StatelessWidget {
                       children: [
                         TextField(
                           controller: instruction['description'],
-                          decoration: InputDecoration(hintText: "Step ${index + 1}"),
+                          decoration:
+                          InputDecoration(hintText: "Step ${index + 1}"),
                           maxLines: 2,
                         ),
                         Row(
                           children: [
                             TextButton.icon(
-                              onPressed: () => controller.pickInstructionPhoto(index),
-                              icon: const Icon(Icons.image, color: Colors.deepOrange),
+                              onPressed: () =>
+                                  controller.pickInstructionPhoto(index),
+                              icon: const Icon(Icons.image,
+                                  color: Colors.deepOrange),
                               label: const Text("Add Photo",
                                   style: TextStyle(color: Colors.deepOrange)),
                             ),
+                            // Show current photo if available
+                            if (instruction['photo_url'] != null)
+                              SizedBox(
+                                height: 40,
+                                width: 40,
+                                child: Image.file(instruction['photo_url'] as File, fit: BoxFit.cover),
+                              ),
+                            if (instruction['photo_url'] == null && instruction['photo_url_string'] != null)
+                              SizedBox(
+                                height: 40,
+                                width: 40,
+                                child: Image.network(
+                                  instruction['photo_url_string'] as String,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.broken_image),
+                                ),
+                              ),
+                            const Spacer(), // Pushes remove button to the right
                             IconButton(
-                              onPressed: () => controller.removeInstruction(index),
-                              icon: const Icon(Icons.remove_circle, color: Colors.red),
+                              onPressed: () =>
+                                  controller.removeInstruction(index),
+                              icon: const Icon(Icons.remove_circle,
+                                  color: Colors.red),
                             )
                           ],
                         ),
@@ -259,57 +314,38 @@ class UploadRecipe extends StatelessWidget {
                   }).toList(),
                 ),
                 const SizedBox(height: 12),
-                // Cooking time
+                // Cooking time & servings
                 Row(
                   children: [
                     Expanded(
-                      child: _labeledField("Hours", "e.g., 1", controller.hoursController,
+                      child: _labeledField(
+                          "Hours", "e.g., 1", controller.hoursController,
                           keyboardType: TextInputType.number),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: _labeledField("Minutes", "e.g., 30", controller.minutesController,
+                      child: _labeledField(
+                          "Minutes", "e.g., 30", controller.minutesController,
                           keyboardType: TextInputType.number),
                     ),
                   ],
                 ),
-                _labeledField("Servings", "e.g., 4", controller.servingsController,
+                _labeledField("Servings", "e.g., 4",
+                    controller.servingsController,
                     keyboardType: TextInputType.number),
                 const SizedBox(height: 8),
                 const Text("Difficulty"),
-                Wrap(
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Checkbox(
-                          value: controller.easyDifficulty,
-                          onChanged: (v) => controller.setDifficulty('Easy'),
-                        ),
-                        const Text('Easy'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Checkbox(
-                          value: controller.mediumDifficulty,
-                          onChanged: (v) => controller.setDifficulty('Medium'),
-                        ),
-                        const Text('Medium'),
-                      ],
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Checkbox(
-                          value: controller.hardDifficulty,
-                          onChanged: (v) => controller.setDifficulty('Hard'),
-                        ),
-                        const Text('Hard'),
-                      ],
-                    ),
-                  ],
+                Column(
+                  children: difficulties.map((difficulty) {
+                    return RadioListTile<String>(
+                      title: Text(difficulty),
+                      value: difficulty,
+                      groupValue: controller.getDifficulty(),
+                      onChanged: (val) {
+                        controller.setDifficulty(val!);
+                      },
+                    );
+                  }).toList(),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
