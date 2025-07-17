@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
               const Spacer(),
               SizedBox(height: 16),
               Text(
-                AppText.foodSwift,
+                'foodieghar',
                 style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900),
               ),
               SizedBox(height: 16),

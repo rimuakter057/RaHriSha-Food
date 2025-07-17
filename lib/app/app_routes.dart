@@ -6,7 +6,8 @@ import 'package:rahrisha_food/features/auth/ui/screens/splash_screen.dart';
 import 'package:rahrisha_food/features/auth/ui/screens/verify_otp_screen.dart';
 import 'package:rahrisha_food/features/common/ui/screens/main_bottom_nav_screen.dart';
 import 'package:rahrisha_food/features/edit_profile/ui/screen/edit_profile_screen.dart';
-import 'package:rahrisha_food/features/recepie/screens/Edit_recipe.dart';
+import 'package:rahrisha_food/features/recepie/screens/Edit_recipe.dart'; // Assuming this is distinct if you keep it
+import 'package:rahrisha_food/features/recepie/screens/my_recipe_details.dart';
 import 'package:rahrisha_food/features/recepie/screens/recipe_details.dart';
 import 'package:rahrisha_food/features/recepie/screens/upload_recipe.dart';
 import 'package:rahrisha_food/features/user_profile/ui/screen/user_profile.dart';
@@ -32,42 +33,64 @@ class AppRoutes {
           builder: (_) => VerifyOtpScreen(email: email, otp: otp),
         );
       }
-      print("VerifyOtpScreen called with missing or invalid args");
+      print("VerifyOtpScreen called with missing or invalid args. Providing empty.");
+      // Fallback for missing/invalid args
       return MaterialPageRoute(
-        builder: (_) => VerifyOtpScreen(email: '', otp: ''),
+        builder: (_) => const VerifyOtpScreen(email: '', otp: ''),
       );
     } else if (settings.name == ForgotPasswordScreen.name) {
-      return MaterialPageRoute(builder: (_) => ForgotPasswordScreen());
+      return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()); // Added const
     } else if (settings.name == MainBottomNavScreen.name) {
       return MaterialPageRoute(builder: (_) => const MainBottomNavScreen());
     } else if (settings.name == UploadRecipe.name) {
-      return MaterialPageRoute(builder: (_) => UploadRecipe());
+      // UploadRecipe might be used for editing, so it might expect arguments.
+      // If it takes a 'recipe' argument for editing, you'd handle it here.
+      // For now, assuming it takes no required arguments on direct navigation.
+      return MaterialPageRoute(builder: (_) => const UploadRecipe()); // Added const
     } else if (settings.name == RecipeEditPage.name) {
-      return MaterialPageRoute(builder: (_) => RecipeEditPage());
+      // If RecipeEditPage takes specific arguments, handle them here.
+      return MaterialPageRoute(builder: (_) => const RecipeEditPage()); // Added const
     } else if (settings.name == RecipeDetailPage.name) {
       final args = settings.arguments;
       print("Navigating to RecipeDetailPage with args: $args");
-
       if (args is int) {
         return MaterialPageRoute(
           builder: (_) => RecipeDetailPage(recipeId: args),
-
         );
       } else {
-        print("RecipeDetailPage called with invalid or missing recipeId!");
+        print("RecipeDetailPage called with invalid or missing recipeId! Arguments: $args");
         return MaterialPageRoute(
           builder: (_) => const Scaffold(
             body: Center(
-              child: Text('Invalid recipe ID.'),
+              child: Text('Error: Invalid or missing Recipe ID.'),
+            ),
+          ),
+        );
+      }
+    } else if (settings.name == MyRecipeDetails.name) {
+      // This was incorrectly nested. Now it's a top-level check.
+      final args = settings.arguments;
+      print("Navigating to MyRecipeDetails with args: $args");
+      if (args is int) {
+        return MaterialPageRoute(
+          builder: (_) => MyRecipeDetails(recipeId: args),
+        );
+      } else {
+        print("MyRecipeDetails called with invalid or missing recipeId! Arguments: $args");
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(
+              child: Text('Error: Invalid or missing My Recipe ID.'),
             ),
           ),
         );
       }
     } else if (settings.name == UserProfile.name) {
-      return MaterialPageRoute(builder: (_) => UserProfile());
+      return MaterialPageRoute(builder: (_) => const UserProfile()); // Added const
     } else if (settings.name == EditProfileScreen.name) {
       return MaterialPageRoute(builder: (_) => const EditProfileScreen());
     } else {
+      // Default case for unknown routes
       print("Route not found: ${settings.name}");
       return MaterialPageRoute(
         builder: (_) => const Scaffold(

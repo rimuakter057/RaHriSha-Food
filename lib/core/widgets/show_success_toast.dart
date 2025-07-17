@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 void showSuccessToast({
   required BuildContext context,
   required IconData icon,
-  required String title,
+  required String title, required String message,
 }) {
   showDialog(
     context: context,

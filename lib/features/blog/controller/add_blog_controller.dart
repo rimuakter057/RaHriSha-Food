@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:rahrisha_food/features/auth/controllers/user_service.dart';
+import 'package:rahrisha_food/features/common/widgets/dialog.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:rahrisha_food/features/blog/controller/blogcontroller.dart';
 
@@ -13,11 +15,13 @@ class AddBlogController extends GetxController {
 
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
-  final TextEditingController authorController = TextEditingController();
+
+  final UserService userService = Get.find<UserService>();
 
   File? imageFile;
   bool isLoading = false;
   String errorMessage = '';
+  final userId = Supabase.instance.client.auth.currentUser?.id;
 
   @override
   void onInit() {
@@ -29,12 +33,13 @@ class AddBlogController extends GetxController {
   void onClose() {
     titleController.dispose();
     contentController.dispose();
-    authorController.dispose();
     super.onClose();
   }
 
   Future<void> pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
     if (pickedFile != null) {
       imageFile = File(pickedFile.path);
       errorMessage = '';
@@ -61,19 +66,20 @@ class AddBlogController extends GetxController {
       isLoading = true;
       update();
 
-      final String fileName = 'blog_images/${DateTime.now().millisecondsSinceEpoch}.png';
+      final String fileName =
+          'blog_images/${DateTime.now().millisecondsSinceEpoch}.png';
 
-      await _supabaseClient.storage.from('blogcovers').upload(
-        fileName,
-        imageFile!,
-        fileOptions: const FileOptions(
-          cacheControl: '3600',
-          upsert: false,
-        ),
-      );
+      await _supabaseClient.storage
+          .from('blogcovers')
+          .upload(
+            fileName,
+            imageFile!,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
 
-      final String publicUrl =
-      _supabaseClient.storage.from('blogcovers').getPublicUrl(fileName);
+      final String publicUrl = _supabaseClient.storage
+          .from('blogcovers')
+          .getPublicUrl(fileName);
 
       return publicUrl;
     } on StorageException catch (e) {
@@ -101,18 +107,14 @@ class AddBlogController extends GetxController {
       update();
       return;
     }
+
     if (contentController.text.trim().isEmpty) {
       errorMessage = 'Blog content cannot be empty.';
       isLoading = false;
       update();
       return;
     }
-    if (authorController.text.trim().isEmpty) {
-      errorMessage = 'Author name cannot be empty.';
-      isLoading = false;
-      update();
-      return;
-    }
+
     if (imageFile == null) {
       errorMessage = 'Please select a cover image for your blog.';
       isLoading = false;
@@ -128,35 +130,47 @@ class AddBlogController extends GetxController {
     }
 
     try {
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        errorMessage = 'User is not authenticated.';
+        isLoading = false;
+        update();
+        return;
+      }
+
+      String authorName = userService.userName.value;
+      if (authorName.isEmpty || authorName == 'No Name') {
+        authorName = user.email ?? 'Anonymous';
+      }
+
       await _supabaseClient.from('blogpost').insert({
         'title': titleController.text.trim(),
         'content': contentController.text.trim(),
-        'author': authorController.text.trim(),
+        'author': authorName,
         'image_url': imageUrl,
         'created_at': DateTime.now().toIso8601String(),
         'time_ago': 'Just now',
+        'user_id': user.id,
       });
-
-      Get.snackbar(
-        'Success',
-        'Blog post added successfully!',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green.withOpacity(0.8),
-        colorText: Colors.white,
-      );
 
       titleController.clear();
       contentController.clear();
-      authorController.clear();
       imageFile = null;
 
       if (Get.isRegistered<BlogController>()) {
         Get.find<BlogController>().fetchBlogs();
       }
 
-      Get.back();
-    } on PostgrestException catch (e) {
-      errorMessage = 'Failed to add blog post: ${e.message}';
+      showSuccessDialog(
+        title: 'Blog Post Added!',
+        message: ' Your blog post has been successfully published.',
+        onConfirm: () {
+          Get.back();
+          update();
+        },
+
+      );
+      update();
     } catch (e) {
       errorMessage = 'An unexpected error occurred.';
     } finally {

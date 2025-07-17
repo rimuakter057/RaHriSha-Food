@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -17,10 +18,8 @@ class SignUpController extends GetxController {
       );
 
       if (response.user != null) {
-        Get.snackbar('Success', 'Sign up successful!');
         return true;
       } else {
-        Get.snackbar('Error', 'Sign up failed.');
         return false;
       }
     } on AuthException catch (e) {
