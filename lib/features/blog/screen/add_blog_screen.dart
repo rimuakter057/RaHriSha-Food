@@ -105,7 +105,7 @@ class AddBlogScreen extends StatelessWidget {
                     ? null
                     : () => controller.addBlogPost(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AppColors.primaryColor,
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),

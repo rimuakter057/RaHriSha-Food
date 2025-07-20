@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/features/common/controllers/main_bottom_nav_controller.dart';
 
 class MainBottomNavScreen extends StatelessWidget {
@@ -36,7 +37,7 @@ class MainBottomNavScreen extends StatelessWidget {
                 iconTheme: MaterialStateProperty.resolveWith(
                       (states) => IconThemeData(
                     color: states.contains(MaterialState.selected)
-                        ? Colors.green
+                        ? AppColors.primaryColor
                         : Colors.grey,
                     size: states.contains(MaterialState.selected) ? 28 : 26,
                   ),

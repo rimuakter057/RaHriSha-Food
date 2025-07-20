@@ -10,6 +10,7 @@ import 'package:rahrisha_food/features/home/controllers/fetch_recipe_controller.
 import 'package:rahrisha_food/features/home/widgets/home_carousel_slider.dart';
 import 'package:rahrisha_food/features/recepie/controller/recipe_detils_controller.dart';
 import 'package:rahrisha_food/features/recepie/screens/recipe_details.dart';
+import 'package:rahrisha_food/features/user_profile/ui/screen/user_profile.dart';
 import 'package:rahrisha_food/features/wishlist/controller/favourite_controller.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -87,27 +88,30 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   autofocus: true,
                 );
               } else {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Hello,',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white.withOpacity(0.8),
+                return GestureDetector(
+                  onTap: (){Get.to(UserProfile());},
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hello,',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white.withOpacity(0.8),
+                        ),
                       ),
-                    ),
-                    Text(
-                      userService.userName.value.isNotEmpty
-                          ? userService.userName.value
-                          : 'Guest',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
+                      Text(
+                        userService.userName.value.isNotEmpty
+                            ? userService.userName.value
+                            : 'Guest',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 );
               }
             });

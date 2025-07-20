@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/features/blog/controller/user_blog_controller.dart';
 import 'package:rahrisha_food/features/common/widgets/dialog.dart';
 import 'add_blog_screen.dart';
@@ -56,14 +57,14 @@ class _UserBlogsScreenState extends State<UserBlogsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primary = theme.primaryColor;
+    final primary = AppColors.primaryColor;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Blogs', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.primaryColor,
         flexibleSpace: _buildAppBarBackground(),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
@@ -97,11 +98,11 @@ class _UserBlogsScreenState extends State<UserBlogsScreen> {
   Widget _buildAppBarBackground() {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+       /* gradient: const LinearGradient(
           colors: [Colors.green, Color(0xFF66BB6A)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-        ),
+        ),*/
         border: const Border(
           bottom: BorderSide(color: Colors.amber, width: 2),
           left: BorderSide(color: Colors.amber, width: 1),
