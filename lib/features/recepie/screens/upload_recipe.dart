@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/features/recepie/controller/upload_recipe_controller.dart';
 
 class UploadRecipe extends StatefulWidget { // Changed to StatefulWidget to use initState for loading
@@ -351,6 +352,8 @@ class _UploadRecipeState extends State<UploadRecipe> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,),
                     onPressed: controller.isSaving
                         ? null
                         : controller.uploadOrUpdateRecipe,

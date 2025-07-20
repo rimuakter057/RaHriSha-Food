@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Still need Get for navigation and Get.put/find
+import 'package:rahrisha_food/app/app_colors.dart';
 import 'package:rahrisha_food/features/blog/controller/blogcontroller.dart';
 import 'add_blog_screen.dart';
 import 'blog_detail_screen.dart';
@@ -127,8 +128,8 @@ class _BlogScreenState extends State<BlogScreen> with BlogCardBuilder {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
-        toolbarHeight: 70,
-        backgroundColor: Colors.green,
+        toolbarHeight: 60,
+        backgroundColor: AppColors.primaryColor,
         centerTitle: true,
         leading: IconButton(
           onPressed: () async {

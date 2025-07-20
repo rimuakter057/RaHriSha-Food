@@ -23,7 +23,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     final TextTheme textTheme =Theme.of(context).textTheme;
     return Scaffold(
-      backgroundColor: Color(0xFF0A0C2D),
+      backgroundColor: AppColors.secondary,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -86,6 +86,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             width: double.infinity,
             height: 50.h,
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryColor,),
               onPressed: () {
                 if(_formKey.currentState!.validate()){
                   Get.toNamed(VerifyOtpScreen.name);
