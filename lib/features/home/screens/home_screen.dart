@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               backgroundColor: Colors.white,
               backgroundImage: imageUrl.isNotEmpty
                   ? NetworkImage(imageUrl)
-                  : const AssetImage('assets/default_profile.png') as ImageProvider,
+                  : const AssetImage('assets/images/6024359.jpg') as ImageProvider,
             ),
           );
         }),

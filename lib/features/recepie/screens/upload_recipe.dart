@@ -161,7 +161,7 @@ class _UploadRecipeState extends State<UploadRecipe> {
                           controller.update();
                         },
                         child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -183,6 +183,7 @@ class _UploadRecipeState extends State<UploadRecipe> {
                               const SizedBox(width: 4),
                               Text(item['title'] as String,
                                   style: TextStyle(
+                                    fontSize: 12,
                                       color: isSelected
                                           ? Colors.white
                                           : Colors.black)),
