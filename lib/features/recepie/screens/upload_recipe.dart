@@ -148,7 +148,10 @@ class _UploadRecipeState extends State<UploadRecipe> {
                     controller.descriptionController,
                     maxLines: 3),
                 const SizedBox(height: 12),
-                const Text("Category"),
+                const Text("Category",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
                 Row(
                   children: List.generate(categories.length, (index) {
                     final isSelected =
